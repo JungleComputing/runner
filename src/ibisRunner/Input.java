@@ -292,7 +292,7 @@ public class Input {
 
     public void skipWhiteSpace() {
         if(eoln()) return;
-        while (Character.isSpace(nextChar())) {
+        while (Character.isWhitespace((nextChar()))) {
             readChar();
         }
     }
@@ -501,7 +501,7 @@ public class Input {
     public String readWord() {
         String res = "";
         skipWhiteSpace();
-        while (!Character.isSpace(nextChar()) && !eoln()) {
+        while (!Character.isWhitespace(nextChar()) && !eoln()) {
             res += readChar();
         }
         return res;

@@ -34,10 +34,6 @@ public class Application {
         this.friendlyName = friendlyName;
     }
 
-    public String toString() {
-        return friendlyName;
-    }
-
     public String[] getParameters() {
         return (String[]) parameters.clone();
     }
@@ -56,7 +52,7 @@ public class Application {
         in.readln();
 
         ArrayList params = new ArrayList();
-        while (!in.eoln()) {
+        while (!in.eof()) {
             String p = in.readWord();
             in.skipWhiteSpace();
             
@@ -70,5 +66,17 @@ public class Application {
         }
         
         return new Application(command, parameters, name);
+    }
+    
+    public String toString() {
+        String res = "Application " + friendlyName;
+        res += "   command: " + command + "\n";
+        res += "   parameters: ";
+        
+        for(int i=0; i<parameters.length; i++) {
+            res += "        " + parameters[i];
+        }
+        
+        return res;
     }
 }

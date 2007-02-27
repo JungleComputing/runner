@@ -1,0 +1,50 @@
+<project name="ibisRunner" default="build" basedir=".">
+	<description>
+      Build file for ibisRunner
+    </description>
+
+	<property environment="env"/>
+    <property name="engine_path" location="${env.GAT_LOCATION}/engine/lib" />
+
+	<!-- Global properties for ibisRunner -->
+	<property name="src" location="src" />
+	<property name="tmp" location="tmp" />
+	<property name="lib" location="lib" />
+	<property name="doc" location="doc" />
+	<property name="log" location="log" />
+	<property name="java.debug.value" value="true" />
+
+	<path id="external_jars">
+		<fileset dir="${engine_path}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init">
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${lib}" />
+		<mkdir dir="${tmp}" />
+	</target>
+
+	<target name="compile" depends="init" description="compile the source ">
+		<!-- Compile the java code from ${src} into ${tmp} -->
+		<javac srcdir="${src}" destdir="${tmp}" debug="on" >
+			<classpath refid="external_jars" />
+		</javac>
+	</target>
+
+	<target name="build" depends="clean,compile" description="build the JAR file">
+		<!-- Create the distribution directory -->
+		<mkdir dir="${lib}" />
+
+		<!-- Put everything in ${tmp} into the ibisRunner.jar file -->
+		<jar jarfile="${lib}/ibisRunner.jar" basedir="${tmp}" />
+
+		<delete dir="${tmp}" />
+	</target>
+
+	<target name="clean" description="clean up">
+		<delete dir="${tmp}" />
+		<delete dir="${lib}" />
+	</target>
+</project>

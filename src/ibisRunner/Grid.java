@@ -6,7 +6,7 @@ package ibisRunner;
 import java.util.ArrayList;
 
 public class Grid {
-    private ArrayList computeResources = new ArrayList();
+    private ArrayList<Cluster> clusters = new ArrayList();
 
     private String gridName;
 
@@ -14,26 +14,18 @@ public class Grid {
         this.gridName = gridName;
     }
 
-    public String getGridName() {
-        return gridName;
+    public void addCluster(Cluster a) {
+        clusters.add(a);
     }
 
-    public void addComputeResource(Cluster a) {
-        computeResources.add(a);
-    }
-
-    public ArrayList getComputeResources() {
-        return computeResources;
-    }
-
-    public void setComputeResources(ArrayList computeResources) {
-        this.computeResources = computeResources;
+    public ArrayList<Cluster> getClusters() {
+        return clusters;
     }
 
     public int getTotalMachineCount() {
         int res = 0;
-        for (int i = 0; i < computeResources.size(); i++) {
-            Cluster c = (Cluster) computeResources.get(i);
+        for (int i = 0; i < clusters.size(); i++) {
+            Cluster c = (Cluster) clusters.get(i);
             res += c.getMachineCount();
         }
         return res;
@@ -41,8 +33,8 @@ public class Grid {
     
     public int getTotalCPUCount() {
         int res = 0;
-        for (int i = 0; i < computeResources.size(); i++) {
-            Cluster c = (Cluster) computeResources.get(i);
+        for (int i = 0; i < clusters.size(); i++) {
+            Cluster c = (Cluster) clusters.get(i);
             res += c.getMachineCount() * c.getCPUsPerMachine();
         }
         return res;
@@ -55,7 +47,7 @@ public class Grid {
         Grid g = new Grid(gridName);
 
         while (!in.eof()) {
-            // VU fs0.das2.cs.vu.nl ssh 64
+            // VU fs0.das2.cs.vu.nl ssh 64 2
             String friendly = in.readWord();
             String machine = in.readWord();
             String access = in.readWord();
@@ -64,9 +56,17 @@ public class Grid {
             in.readln();
 
             Cluster r = new Cluster(friendly, machine, access, machineCount, CPUsPerMachine);
-            g.addComputeResource(r);
+            g.addCluster(r);
         }
 
         return g;
+    }
+    
+    public String toString() {
+        String res = "grid " + gridName + " resources:\n";
+        for(int i=0; i<clusters.size(); i++) {
+            res += "    " + clusters.get(i);            
+        }
+        return res;
     }
 }

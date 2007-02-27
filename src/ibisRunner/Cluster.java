@@ -3,17 +3,17 @@
  */
 package ibisRunner;
 
-
 public class Cluster {
     private String friendlyName;
+
     private String hostname;
 
     private String accessType;
 
     private int machineCount;
-    
+
     private int CPUsPerMachine;
-    
+
     /**
      * @param accessType the resource manager to use
      * @param hostname the hostname to contact
@@ -44,8 +44,9 @@ public class Cluster {
     }
 
     public String toString() {
-        return hostname + " with "
-            + accessType;
+        return "Cluster " + friendlyName + " contact = " + hostname + " with "
+                + accessType + " machineCount = " + machineCount
+                + " CPUs/machine = " + CPUsPerMachine;
     }
 
     public String getFriendlyName() {
