@@ -8,21 +8,23 @@ public class Run {
     private ArrayList<RequestedResource> requestedResources = new ArrayList();
     
     public static Run loadRun(String filename) {
+        System.err.print("loading run: " + filename);
         Input in = new Input(filename);
 
         Run run = new Run();
         
-        String gridFile = in.readString();
+        String gridFile = in.readWord();
         in.readln();
 
-        String appFile = in.readString();
+        String appFile = in.readWord();
         in.readln();
-        
+
         while (!in.eof()) {
             int machineCount = 0;
             int CPUsPerMachine = 0;
-            String cluster = in.readString();
+            String cluster = in.readWord();
             in.skipWhiteSpace();
+
             if(!in.eoln()) {
                 machineCount = in.readInt();
                 in.skipWhiteSpace();
@@ -31,12 +33,14 @@ public class Run {
             if(!in.eoln()) {
                 CPUsPerMachine = in.readInt();
             }
-            
+
             in.readln();
             
             RequestedResource res = new RequestedResource(cluster, machineCount, CPUsPerMachine);
             run.requestedResources.add(res);
         }
+
+        System.err.println(" DONE");
         
         run.grid = Grid.loadGrid(gridFile);
         run.app = Application.loadApplication(appFile);
@@ -57,7 +61,7 @@ public class Run {
     }
     
     public String toString() {
-        String res = app + "\n" + grid + "\n";
+        String res = "Run: " + app + "\n" + grid + "\n";
         
         res += "requested: ";
         for(int i=0; i<requestedResources.size(); i++) {
@@ -68,6 +72,5 @@ public class Run {
         }
         
         return res;
-        
     }
 }

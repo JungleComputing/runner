@@ -43,6 +43,7 @@ public class Application {
     }
 
     public static Application loadApplication(String filename) {
+        System.err.print("loading application: " + filename);
         Input in = new Input(filename);
 
         String name = in.readString();
@@ -57,24 +58,26 @@ public class Application {
             in.skipWhiteSpace();
             
             params.add(p);
+            in.readln();
         }
-        in.readln();
         
         String[] parameters = new String[params.size()];
         for(int i=0; i<parameters.length; i++) {
             parameters[i] = (String) params.get(i);
         }
         
+        System.err.println(" DONE");
         return new Application(command, parameters, name);
+        
     }
     
     public String toString() {
-        String res = "Application " + friendlyName;
+        String res = "Application " + friendlyName + "\n";
         res += "   command: " + command + "\n";
         res += "   parameters: ";
         
         for(int i=0; i<parameters.length; i++) {
-            res += "        " + parameters[i];
+            res += "        " + parameters[i] + "\n";
         }
         
         return res;

@@ -41,11 +41,11 @@ public class Grid {
     }
     
     public static Grid loadGrid(String filename) {
+        System.err.print("loading grid: " + filename);
         Input in = new Input(filename);
         String gridName = in.readString();
         in.readln();
         Grid g = new Grid(gridName);
-
         while (!in.eof()) {
             // VU fs0.das2.cs.vu.nl ssh 64 2
             String friendly = in.readWord();
@@ -59,13 +59,14 @@ public class Grid {
             g.addCluster(r);
         }
 
+        System.err.println(" DONE");
         return g;
     }
     
     public String toString() {
         String res = "grid " + gridName + " resources:\n";
         for(int i=0; i<clusters.size(); i++) {
-            res += "    " + clusters.get(i);            
+            res += "    " + clusters.get(i) + "\n";            
         }
         return res;
     }
