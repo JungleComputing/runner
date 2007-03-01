@@ -22,6 +22,16 @@ public class Grid {
         return clusters;
     }
 
+    public Cluster getCluster(String name) {
+        for(int i=0; i<clusters.size(); i++) {
+            if(clusters.get(i).getFriendlyName().equals(name)) {
+                return clusters.get(i);
+            }
+        }
+        
+        return null;
+    }
+    
     public int getTotalMachineCount() {
         int res = 0;
         for (int i = 0; i < clusters.size(); i++) {

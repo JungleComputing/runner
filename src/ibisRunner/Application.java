@@ -6,24 +6,24 @@ package ibisRunner;
 import java.util.ArrayList;
 
 public class Application {
-    private String command;
+    private String executable;
 
     private String[] parameters;
 
     private String friendlyName;
 
     public Application(String command, String[] parameters, String name) {
-        this.command = command;
+        this.executable = command;
         this.parameters = parameters;
         friendlyName = name;
     }
 
-    public String getCommand() {
-        return command;
+    public String getExecutable() {
+        return executable;
     }
 
-    public void setCommand(String command) {
-        this.command = command;
+    public void setExecutable(String exe) {
+        this.executable = exe;
     }
 
     public String getFriendlyName() {
@@ -73,7 +73,7 @@ public class Application {
     
     public String toString() {
         String res = "Application " + friendlyName + "\n";
-        res += "   command: " + command + "\n";
+        res += "   executable: " + executable + "\n";
         res += "   parameters: ";
         
         for(int i=0; i<parameters.length; i++) {
