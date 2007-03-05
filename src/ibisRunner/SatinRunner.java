@@ -121,7 +121,7 @@ public class SatinRunner implements MetricListener {
         java.io.File tmp = new java.io.File(ibisHome + "/lib");
         String[] jars = tmp.list();
         for(int i=0; i<jars.length; i++) {
-            classpath += ":" + jars[i];
+            classpath += ":lib/" + jars[i];
         }
         sd.addAttribute("java.classpath", classpath);
         
