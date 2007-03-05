@@ -53,12 +53,10 @@ public class Application {
         in.readln();
 
         ArrayList<String> params = new ArrayList<String>();
-        while (!in.eof()) {
+        while (!in.eoln()) {
             String p = in.readWord();
             in.skipWhiteSpace();
-            
             params.add(p);
-            in.readln();
         }
         
         String[] parameters = new String[params.size()];
