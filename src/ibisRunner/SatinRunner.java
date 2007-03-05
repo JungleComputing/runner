@@ -129,6 +129,7 @@ public class SatinRunner implements MetricListener {
         HashMap<String,String> environment = new HashMap<String,String>();
         environment.put("ibis.registry.host", "fs0.das2.cs.vu.nl");
         environment.put("ibis.registry.pool", "test");
+        environment.put("satin.closed", "true");
         sd.setEnvironment(environment);
         
         prefs.put("ResourceBroker.adaptor.name", cluster.getAccessType());
