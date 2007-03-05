@@ -113,6 +113,8 @@ public class SatinRunner implements MetricListener {
         sd.setStderr(errFile);
         sd.addPreStagedFile(ibisLib);
         sd.addPreStagedFile(applicationJar);
+        sd.setArguments(app.getArguments());
+        
         sd.addAttribute("count", req.getMachineCount()
             * req.getCPUsPerMachine());
         sd.addAttribute("hostCount", req.getMachineCount());
