@@ -100,7 +100,7 @@ public class SatinRunner implements MetricListener {
         sd.addAttribute("count", req.getMachineCount()
             * req.getCPUsPerMachine());
         sd.addAttribute("hostCount", req.getMachineCount());
-        sd.addAttribute("java.home", cluster.getJavaHome());
+        sd.addAttribute("java.home", new URI(cluster.getJavaHome()));
 
         prefs.put("ResourceBroker.adaptor.name", cluster.getAccessType());
         Hashtable<String, String> hardwareAttributes = new Hashtable<String, String>();
