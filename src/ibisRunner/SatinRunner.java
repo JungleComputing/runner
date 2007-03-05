@@ -130,6 +130,8 @@ public class SatinRunner implements MetricListener {
         environment.put("ibis.registry.host", "fs0.das2.cs.vu.nl");
         environment.put("ibis.registry.pool", "test");
         environment.put("satin.closed", "true");
+        environment.put("ibis.pool.total_hosts", "" + (req.getMachineCount()
+            * req.getCPUsPerMachine()));
         sd.setEnvironment(environment);
         
         prefs.put("ResourceBroker.adaptor.name", cluster.getAccessType());
