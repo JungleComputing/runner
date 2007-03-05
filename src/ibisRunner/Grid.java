@@ -63,9 +63,10 @@ public class Grid {
             String access = in.readWord();
             int machineCount = in.readInt();
             int CPUsPerMachine = in.readInt();
+            String javaHome = in.readWord();
             in.readln();
 
-            Cluster r = new Cluster(friendly, machine, access, machineCount, CPUsPerMachine);
+            Cluster r = new Cluster(friendly, machine, access, machineCount, CPUsPerMachine, javaHome);
             g.addCluster(r);
         }
 
