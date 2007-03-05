@@ -8,13 +8,13 @@ import java.util.ArrayList;
 public class Application {
     private String executable;
 
-    private String[] parameters;
+    private String[] arguments;
 
     private String friendlyName;
 
     public Application(String command, String[] parameters, String name) {
         this.executable = command;
-        this.parameters = parameters;
+        this.arguments = parameters;
         friendlyName = name;
     }
 
@@ -34,12 +34,12 @@ public class Application {
         this.friendlyName = friendlyName;
     }
 
-    public String[] getParameters() {
-        return (String[]) parameters.clone();
+    public String[] getArguments() {
+        return (String[]) arguments.clone();
     }
 
-    public void setParameters(String[] parameters) {
-        this.parameters = parameters;
+    public void setArguments(String[] parameters) {
+        this.arguments = parameters;
     }
 
     public static Application loadApplication(String filename) {
@@ -76,8 +76,8 @@ public class Application {
         res += "   executable: " + executable + "\n";
         res += "   parameters: ";
         
-        for(int i=0; i<parameters.length; i++) {
-            res += "        " + parameters[i] + "\n";
+        for(int i=0; i<arguments.length; i++) {
+            res += "        " + arguments[i] + "\n";
         }
         
         return res;
