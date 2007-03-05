@@ -72,10 +72,10 @@ public class Application {
     public String toString() {
         String res = "Application " + friendlyName + "\n";
         res += "   executable: " + executable + "\n";
-        res += "   parameters: ";
+        res += "   parameters:";
         
         for(int i=0; i<arguments.length; i++) {
-            res += "        " + arguments[i] + "\n";
+            res += " " + arguments[i];
         }
         
         return res;

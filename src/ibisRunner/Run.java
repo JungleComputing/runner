@@ -68,7 +68,7 @@ public class Run {
             RequestedResource r = requestedResources.get(i);
             res += "    " + r.getClusterName()
             + " " + r.getMachineCount() + " machines, with "
-            + r.getCPUsPerMachine() + " CPUs/machine\n";
+            + r.getCPUsPerMachine() + " CPUs/machine, for a total of " + (r.getMachineCount() * r.getCPUsPerMachine()) + "CPUs\n";
         }
         
         return res;
