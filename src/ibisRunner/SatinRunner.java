@@ -69,6 +69,20 @@ public class SatinRunner implements MetricListener {
                 System.exit(1);
             }
         }
+
+        for (int i = 0; i < requested.size(); i++) {
+            // wait until jobs are done
+            synchronized (this) {
+                while ((jobs[i].getState() != Job.STOPPED)
+                    && (jobs[i].getState() != Job.SUBMISSION_ERROR)) {
+                    try {
+                        wait();
+                    } catch (Exception e) {
+                        //ignore
+                    }
+                }
+            }
+        }
     }
 
     public Job submitJob(Run run, String ibisHome, String ibisAppsHome,
@@ -89,7 +103,8 @@ public class SatinRunner implements MetricListener {
             new URI(ibisHome + "/lib"));
 
         File applicationJar = GAT.createFile(context, prefs, new URI(
-            ibisAppsHome + "/satin/" + app.getFriendlyName() + "/" + app.getFriendlyName() + ".jar"));
+            ibisAppsHome + "/satin/" + app.getFriendlyName() + "/"
+                + app.getFriendlyName() + ".jar"));
 
         SoftwareDescription sd = new SoftwareDescription();
         sd.setLocation(new URI(app.getExecutable()));
@@ -101,7 +116,15 @@ public class SatinRunner implements MetricListener {
             * req.getCPUsPerMachine());
         sd.addAttribute("hostCount", req.getMachineCount());
         sd.addAttribute("java.home", new URI(cluster.getJavaHome()));
-
+     
+        String classpath = app.getFriendlyName() + ".jar:.";
+        java.io.File tmp = new java.io.File(ibisHome + "/lib");
+        String[] jars = tmp.list();
+        for(int i=0; i<jars.length; i++) {
+            classpath += ":" + jars[i];
+        }
+        sd.addAttribute("java.classpath", classpath);
+        
         prefs.put("ResourceBroker.adaptor.name", cluster.getAccessType());
         Hashtable<String, String> hardwareAttributes = new Hashtable<String, String>();
         hardwareAttributes.put("machine.node", cluster.getHostname());
@@ -112,18 +135,25 @@ public class SatinRunner implements MetricListener {
         JobDescription jd = new JobDescription(sd, rd);
 
         System.err.println("constructed job description: " + jd);
-        
-         ResourceBroker broker = GAT.createResourceBroker(context, prefs);
 
-         Job job = broker.submitJob(jd);
-         MetricDefinition md = job.getMetricDefinitionByName("job.status");
-         Metric m = md.createMetric(null);
-         job.addMetricListener(this, m);
-        
-        return null;
+        ResourceBroker broker = GAT.createResourceBroker(context, prefs);
+
+        Job job = broker.submitJob(jd);
+        MetricDefinition md = job.getMetricDefinitionByName("job.status");
+        Metric m = md.createMetric(null);
+        job.addMetricListener(this, m);
+
+        return job;
     }
 
     public void processMetricEvent(MetricValue val) {
-        // TODO Auto-generated method stub
+        String state = (String) val.getValue();
+
+        System.err.println("SubmitJobCallback: Processing metric: "
+            + val.getMetric() + ", value is " + state);
+
+        if (state.equals("STOPPED") || state.equals("SUBMISSION_ERROR")) {
+            notifyAll();
+        }
     }
 }
