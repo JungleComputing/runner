@@ -2,6 +2,7 @@ package ibisRunner;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.gridlab.gat.GAT;
@@ -124,6 +125,11 @@ public class SatinRunner implements MetricListener {
             classpath += ":lib/" + jars[i];
         }
         sd.addAttribute("java.classpath", classpath);
+
+        HashMap<String,String> environment = new HashMap<String,String>();
+        environment.put("ibis.registry.host", "fs0.das2.cs.vu.nl");
+        environment.put("ibis.registry.pool", "test");
+        sd.setEnvironment(environment);
         
         prefs.put("ResourceBroker.adaptor.name", cluster.getAccessType());
         Hashtable<String, String> hardwareAttributes = new Hashtable<String, String>();
@@ -146,7 +152,7 @@ public class SatinRunner implements MetricListener {
         return job;
     }
 
-    public void processMetricEvent(MetricValue val) {
+    public synchronized void processMetricEvent(MetricValue val) {
         String state = (String) val.getValue();
 
         System.err.println("SubmitJobCallback: Processing metric: "
