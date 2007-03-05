@@ -6,7 +6,7 @@ package ibisRunner;
 import java.util.ArrayList;
 
 public class Grid {
-    private ArrayList<Cluster> clusters = new ArrayList();
+    private ArrayList<Cluster> clusters = new ArrayList<Cluster>();
 
     private String gridName;
 

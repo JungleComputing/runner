@@ -52,7 +52,7 @@ public class Application {
         String command = in.readString();
         in.readln();
 
-        ArrayList params = new ArrayList();
+        ArrayList<String> params = new ArrayList<String>();
         while (!in.eof()) {
             String p = in.readWord();
             in.skipWhiteSpace();

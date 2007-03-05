@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Run {
     private Grid grid;
     private Application app;
-    private ArrayList<RequestedResource> requestedResources = new ArrayList();
+    private ArrayList<RequestedResource> requestedResources = new ArrayList<RequestedResource>();
     
     public static Run loadRun(String filename) {
         System.err.print("loading run: " + filename);
