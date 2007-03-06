@@ -63,7 +63,7 @@ public class Run {
     public String toString() {
         String res = "Run: " + app + "\n" + grid + "\n";
         
-        res += "requested: ";
+        res += "requested:\n";
         for(int i=0; i<requestedResources.size(); i++) {
             RequestedResource r = requestedResources.get(i);
             res += "    " + r.getClusterName()
