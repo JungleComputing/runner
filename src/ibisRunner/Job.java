@@ -9,7 +9,7 @@ public class Job {
         subJobs.add(j);
     }
 
-    public int size() {
+    public int numberOfSubJobs() {
         return subJobs.size();
     }
 
