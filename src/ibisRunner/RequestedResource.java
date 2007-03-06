@@ -22,5 +22,4 @@ public class RequestedResource {
         public int getMachineCount() {
             return machineCount;
         }
-        
 }

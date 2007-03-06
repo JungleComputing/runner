@@ -93,7 +93,11 @@ public class SatinRunner implements MetricListener {
         Application app = run.getApp();
         Grid grid = run.getGrid();
         Cluster cluster = grid.getCluster(req.getClusterName());
-
+        int machineCount = req.getMachineCount();
+        if(machineCount == 0) machineCount = cluster.getMachineCount();
+        int CPUsPerMachine = req.getCPUsPerMachine();
+        if(CPUsPerMachine == 0) CPUsPerMachine = cluster.getCPUsPerMachine();
+        
         Preferences prefs = new Preferences();
         File outFile = GAT.createFile(context, prefs, new URI("any:///"
             + app.getFriendlyName() + "." + req.getClusterName() + ".stdout"));
@@ -115,9 +119,8 @@ public class SatinRunner implements MetricListener {
         sd.addPreStagedFile(applicationJar);
         sd.setArguments(app.getArguments());
         
-        sd.addAttribute("count", req.getMachineCount()
-            * req.getCPUsPerMachine());
-        sd.addAttribute("hostCount", req.getMachineCount());
+        sd.addAttribute("count", machineCount * CPUsPerMachine);
+        sd.addAttribute("hostCount", machineCount);
         sd.addAttribute("java.home", new URI(cluster.getJavaHome()));
      
         String classpath = app.getFriendlyName() + ".jar:.";
@@ -133,8 +136,7 @@ public class SatinRunner implements MetricListener {
         environment.put("ibis.registry.host", "fs0.das2.cs.vu.nl");
         environment.put("ibis.registry.pool", "test");
         environment.put("satin.closed", "true");
-        environment.put("ibis.pool.total_hosts", "" + (req.getMachineCount()
-            * req.getCPUsPerMachine()));
+        environment.put("ibis.pool.total_hosts", "" + (machineCount * CPUsPerMachine));
         sd.setEnvironment(environment);
         
         prefs.put("ResourceBroker.adaptor.name", cluster.getAccessType());
