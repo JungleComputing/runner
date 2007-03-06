@@ -17,7 +17,6 @@ import org.gridlab.gat.monitoring.MetricDefinition;
 import org.gridlab.gat.monitoring.MetricListener;
 import org.gridlab.gat.monitoring.MetricValue;
 import org.gridlab.gat.resources.HardwareResourceDescription;
-import org.gridlab.gat.resources.Job;
 import org.gridlab.gat.resources.JobDescription;
 import org.gridlab.gat.resources.ResourceBroker;
 import org.gridlab.gat.resources.ResourceDescription;
@@ -56,11 +55,11 @@ public class SatinRunner implements MetricListener {
 
         GATContext context = new GATContext();
 
-        ArrayList<RequestedResource> requested = run.getRequestedResources();
-        Job[] jobs = new Job[requested.size()];
+        ArrayList<Job> requested = run.getRequestedResources();
+        
         for (int i = 0; i < requested.size(); i++) {
             try {
-                jobs[i] = submitJob(run, ibisHome, ibisAppsHome, context,
+                submitJob(run, ibisHome, ibisAppsHome, context,
                     requested.get(i));
             } catch (Exception e) {
                 System.err.println("Job submission to " + requested.get(i)
@@ -70,12 +69,25 @@ public class SatinRunner implements MetricListener {
                 System.exit(1);
             }
         }
+    }
 
-        for (int i = 0; i < requested.size(); i++) {
-            // wait until jobs are done
+    public void submitJob(Run run, String ibisHome, String ibisAppsHome,
+            GATContext context, Job req)
+            throws GATInvocationException, GATObjectCreationException,
+            URISyntaxException {
+        org.gridlab.gat.resources.Job[] jobs = new org.gridlab.gat.resources.Job[req.size()];
+        for (int i = 0; i < req.size(); i++) {
+                jobs[i] = submitSubJob(run, ibisHome, ibisAppsHome, context,
+                    req.get(i));
+        }
+
+        System.err.println("job submitted, waiting for subjobs");
+        
+        for (int i = 0; i < req.size(); i++) {
+            // wait until job is done
             synchronized (this) {
-                while ((jobs[i].getState() != Job.STOPPED)
-                    && (jobs[i].getState() != Job.SUBMISSION_ERROR)) {
+                while ((jobs[i].getState() != org.gridlab.gat.resources.Job.STOPPED)
+                    && (jobs[i].getState() != org.gridlab.gat.resources.Job.SUBMISSION_ERROR)) {
                     try {
                         wait();
                     } catch (Exception e) {
@@ -84,25 +96,28 @@ public class SatinRunner implements MetricListener {
                 }
             }
         }
-    }
-
-    public Job submitJob(Run run, String ibisHome, String ibisAppsHome,
-        GATContext context, RequestedResource req)
+    }    
+    
+    public org.gridlab.gat.resources.Job submitSubJob(Run run, String ibisHome, String ibisAppsHome,
+        GATContext context, SubJob subJob)
         throws GATInvocationException, GATObjectCreationException,
         URISyntaxException {
+        
+        System.err.println("submit of " + subJob);
+        
         Application app = run.getApp();
         Grid grid = run.getGrid();
-        Cluster cluster = grid.getCluster(req.getClusterName());
-        int machineCount = req.getMachineCount();
+        Cluster cluster = grid.getCluster(subJob.getClusterName());
+        int machineCount = subJob.getMachineCount();
         if(machineCount == 0) machineCount = cluster.getMachineCount();
-        int CPUsPerMachine = req.getCPUsPerMachine();
+        int CPUsPerMachine = subJob.getCPUsPerMachine();
         if(CPUsPerMachine == 0) CPUsPerMachine = cluster.getCPUsPerMachine();
         
         Preferences prefs = new Preferences();
         File outFile = GAT.createFile(context, prefs, new URI("any:///"
-            + app.getFriendlyName() + "." + req.getClusterName() + ".stdout"));
+            + app.getFriendlyName() + "." + subJob.getClusterName() + ".stdout"));
         File errFile = GAT.createFile(context, prefs, new URI("any:///"
-            + app.getFriendlyName() + "." + req.getClusterName() + ".stderr"));
+            + app.getFriendlyName() + "." + subJob.getClusterName() + ".stderr"));
 
         File ibisLib = GAT.createFile(context, prefs,
             new URI(ibisHome + "/lib"));
@@ -148,11 +163,11 @@ public class SatinRunner implements MetricListener {
 
         JobDescription jd = new JobDescription(sd, rd);
 
-        System.err.println("constructed job description: " + jd);
+//       System.err.println("constructed job description: " + jd);
 
         ResourceBroker broker = GAT.createResourceBroker(context, prefs);
 
-        Job job = broker.submitJob(jd);
+        org.gridlab.gat.resources.Job job = broker.submitJob(jd);
         MetricDefinition md = job.getMetricDefinitionByName("job.status");
         Metric m = md.createMetric(null);
         job.addMetricListener(this, m);
@@ -163,8 +178,7 @@ public class SatinRunner implements MetricListener {
     public synchronized void processMetricEvent(MetricValue val) {
         String state = (String) val.getValue();
 
-        System.err.println("SubmitJobCallback: Processing metric: "
-            + val.getMetric() + ", value is " + state);
+        System.err.println("Job status changed to : " + state);
 
         if (state.equals("STOPPED") || state.equals("SUBMISSION_ERROR")) {
             notifyAll();
