@@ -62,6 +62,8 @@ public class Run {
         run.grid = Grid.loadGrid(gridFile);
         run.app = Application.loadApplication(appFile);
 
+        System.err.println("run: " + run);
+        
         return run;
     }
 

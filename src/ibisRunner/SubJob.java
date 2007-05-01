@@ -7,11 +7,15 @@ public class SubJob {
 
     private int CPUsPerMachine = 0;
 
+    private static int subJobNrCounter = 0;
+    
+    private static int subJobNr = 0;
+    
     public SubJob(String clusterName, int machineCount, int usPerMachine) {
         this.clusterName = clusterName;
         this.machineCount = machineCount;
         CPUsPerMachine = usPerMachine;
-        System.err.println("new subjob: " + this );
+        subJobNr = ++subJobNrCounter;
     }
 
     public String getClusterName() {
@@ -27,7 +31,7 @@ public class SubJob {
     }
 
     public String toString() {
-        return "SubJob " + clusterName + " " + machineCount + " machines, with "
+        return "SubJob " + subJobNr + ": " + clusterName + " " + machineCount + " machines, with "
                 + CPUsPerMachine + " CPUs/machine, for a total of "
                 + (machineCount * CPUsPerMachine) + " CPUs";
     }
