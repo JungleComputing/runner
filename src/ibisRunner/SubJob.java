@@ -9,7 +9,7 @@ public class SubJob {
 
     private static int subJobNrCounter = 0;
     
-    private static int subJobNr = 0;
+    private int subJobNr = 0;
     
     public SubJob(String clusterName, int machineCount, int usPerMachine) {
         this.clusterName = clusterName;
