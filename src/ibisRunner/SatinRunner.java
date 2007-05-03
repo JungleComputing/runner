@@ -191,9 +191,6 @@ public class SatinRunner implements MetricListener {
         String state = (String) val.getValue();
 
         System.err.println("Job status changed to : " + state);
-
-        if (state.equals("STOPPED") || state.equals("SUBMISSION_ERROR")) {
-            notifyAll();
-        }
+        notifyAll();
     }
 }
