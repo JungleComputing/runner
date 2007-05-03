@@ -82,7 +82,7 @@ public class SatinRunner implements MetricListener {
         org.gridlab.gat.resources.Job[] jobs =
                 new org.gridlab.gat.resources.Job[job.numberOfSubJobs()];
         for (int i = 0; i < job.numberOfSubJobs(); i++) {
-            jobs[i] = submitSubJob(run, context, job.get(i));
+            jobs[i] = submitSubJob(run, context, job, job.get(i));
         }
 
         System.err.println("job submitted, waiting for subjobs");
@@ -103,7 +103,7 @@ public class SatinRunner implements MetricListener {
     }
 
     public org.gridlab.gat.resources.Job submitSubJob(Run run,
-            GATContext context, SubJob subJob) throws GATInvocationException,
+            GATContext context, Job job, SubJob subJob) throws GATInvocationException,
             GATObjectCreationException, URISyntaxException {
 
         System.err.println("submit of " + subJob);
@@ -122,10 +122,14 @@ public class SatinRunner implements MetricListener {
         File outFile =
                 GAT.createFile(context, prefs, new URI("any:///"
                         + app.getFriendlyName() + "." + subJob.getClusterName()
+                        + "." + job.getJobNr()
+                        + "." + subJob.getSubJobNr()
                         + ".stdout"));
         File errFile =
                 GAT.createFile(context, prefs, new URI("any:///"
                         + app.getFriendlyName() + "." + subJob.getClusterName()
+                        + "." + job.getJobNr()
+                        + "." + subJob.getSubJobNr()
                         + ".stderr"));
 
         File ibisLib =
@@ -179,12 +183,12 @@ public class SatinRunner implements MetricListener {
 
         ResourceBroker broker = GAT.createResourceBroker(context, prefs);
 
-        org.gridlab.gat.resources.Job job = broker.submitJob(jd);
-        MetricDefinition md = job.getMetricDefinitionByName("job.status");
+        org.gridlab.gat.resources.Job j = broker.submitJob(jd);
+        MetricDefinition md = j.getMetricDefinitionByName("job.status");
         Metric m = md.createMetric(null);
-        job.addMetricListener(this, m);
+        j.addMetricListener(this, m);
 
-        return job;
+        return j;
     }
 
     public synchronized void processMetricEvent(MetricValue val) {
