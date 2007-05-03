@@ -22,8 +22,9 @@ public class Run {
         String appFile = in.readWord();
         in.readln();
 
+        int jobno = 0;
         while (!in.eof()) {
-            Job res = new Job();
+            Job res = new Job(jobno);
             int subJobNo = 0;
             while (true) {
                 int machineCount = 0;
