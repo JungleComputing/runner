@@ -158,7 +158,7 @@ public class SatinRunner implements MetricListener {
         sd.addAttribute("java.flags", "-Xmx400M");
 
         HashMap<String, String> environment = new HashMap<String, String>();
-        environment.put("ibis.registry.host", "fs0.das3.cs.vu.nl");
+        environment.put("ibis.registry.serverAddress", "fs0.das3.cs.vu.nl");
         environment.put("ibis.registry.pool", "test");
         environment.put("satin.closed", "true");
         environment.put("ibis.pool.total_hosts", ""
