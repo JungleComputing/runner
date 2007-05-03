@@ -23,15 +23,15 @@ public class Grid {
     }
 
     public Cluster getCluster(String name) {
-        for(int i=0; i<clusters.size(); i++) {
-            if(clusters.get(i).getFriendlyName().equals(name)) {
+        for (int i = 0; i < clusters.size(); i++) {
+            if (clusters.get(i).getFriendlyName().equals(name)) {
                 return clusters.get(i);
             }
         }
-        
+
         return null;
     }
-    
+
     public int getTotalMachineCount() {
         int res = 0;
         for (int i = 0; i < clusters.size(); i++) {
@@ -40,7 +40,7 @@ public class Grid {
         }
         return res;
     }
-    
+
     public int getTotalCPUCount() {
         int res = 0;
         for (int i = 0; i < clusters.size(); i++) {
@@ -49,7 +49,7 @@ public class Grid {
         }
         return res;
     }
-    
+
     public static Grid loadGrid(String filename) {
         System.err.print("loading grid: " + filename);
         Input in = new Input(filename);
@@ -66,19 +66,25 @@ public class Grid {
             String javaHome = in.readWord();
             in.readln();
 
-            Cluster r = new Cluster(friendly, machine, access, machineCount, CPUsPerMachine, javaHome);
+            Cluster r =
+                    new Cluster(friendly, machine, access, machineCount,
+                            CPUsPerMachine, javaHome);
             g.addCluster(r);
         }
 
         System.err.println(" DONE");
         return g;
     }
-    
+
     public String toString() {
         String res = "grid " + gridName + " resources:\n";
-        for(int i=0; i<clusters.size(); i++) {
-            res += "    " + clusters.get(i) + "\n";            
+        for (int i = 0; i < clusters.size(); i++) {
+            res += "    " + clusters.get(i) + "\n";
         }
+
+        res +=
+                "total machine count: " + getTotalMachineCount()
+                        + " total CPU count: " + getTotalCPUCount();
         return res;
     }
 }
