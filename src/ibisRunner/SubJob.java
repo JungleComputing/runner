@@ -7,17 +7,19 @@ public class SubJob {
 
     private int CPUsPerMachine = 0;
 
-    private static int subJobNrCounter = 0;
-    
     private int subJobNr = 0;
     
-    public SubJob(String clusterName, int machineCount, int usPerMachine) {
+    public SubJob(String clusterName, int machineCount, int cpusPerMachine, int subJobNr) {
         this.clusterName = clusterName;
         this.machineCount = machineCount;
-        CPUsPerMachine = usPerMachine;
-        subJobNr = ++subJobNrCounter;
+        CPUsPerMachine = cpusPerMachine;
+        this.subJobNr = subJobNr;
     }
 
+    public int getSubJobNr() {
+        return subJobNr;
+    }
+    
     public String getClusterName() {
         return clusterName;
     }
