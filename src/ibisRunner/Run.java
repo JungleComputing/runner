@@ -25,6 +25,7 @@ public class Run {
         int jobno = 0;
         while (!in.eof()) {
             Job res = new Job(jobno);
+            jobno++;
             int subJobNo = 0;
             while (true) {
                 int machineCount = 0;
@@ -42,6 +43,7 @@ public class Run {
                 }
 
                 SubJob j = new SubJob(cluster, machineCount, CPUsPerMachine, subJobNo);
+                subJobNo++;
                 res.addSubJob(j);
 
                 in.skipWhiteSpace();
