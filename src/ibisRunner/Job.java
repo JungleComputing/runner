@@ -31,7 +31,7 @@ public class Job {
         int totalMachines = 0;
         int totalCPUs = 0;
         for (int j = 0; j < subJobs.size(); j++) {
-            res = "Job " + jobNr + ": ";
+            res += "Job " + jobNr + ": ";
             SubJob subJob = subJobs.get(j);
             res += subJob + "\n";
             totalMachines += subJob.getMachineCount();

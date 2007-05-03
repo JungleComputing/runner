@@ -106,7 +106,7 @@ public class SatinRunner implements MetricListener {
             GATContext context, Job job, SubJob subJob) throws GATInvocationException,
             GATObjectCreationException, URISyntaxException {
 
-        System.err.println("submit of " + subJob);
+        System.err.println("submit of job " + job.getJobNr() + " subJob " + subJob.getSubJobNr());
 
         Application app = run.getApp();
         Grid grid = run.getGrid();
