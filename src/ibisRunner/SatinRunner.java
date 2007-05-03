@@ -85,7 +85,7 @@ public class SatinRunner implements MetricListener {
             jobs[i] = submitSubJob(run, context, job, job.get(i));
         }
 
-        System.err.println("job submitted, waiting for subjobs");
+        System.err.println("job " + job.getJobNr() + " submitted, waiting for subjobs");
 
         synchronized (this) {
             for (int i = 0; i < job.numberOfSubJobs(); i++) {
@@ -111,12 +111,6 @@ public class SatinRunner implements MetricListener {
         Application app = run.getApp();
         Grid grid = run.getGrid();
         Cluster cluster = grid.getCluster(subJob.getClusterName());
-        int machineCount = subJob.getMachineCount();
-        if (machineCount == 0)
-            machineCount = cluster.getMachineCount();
-        int CPUsPerMachine = subJob.getCPUsPerMachine();
-        if (CPUsPerMachine == 0)
-            CPUsPerMachine = cluster.getCPUsPerMachine();
 
         Preferences prefs = new Preferences();
         File outFile =
@@ -148,6 +142,12 @@ public class SatinRunner implements MetricListener {
         sd.addPreStagedFile(applicationJar);
         sd.setArguments(app.getArguments());
 
+        int machineCount = subJob.getMachineCount();
+        if (machineCount == 0)
+            machineCount = cluster.getMachineCount();
+        int CPUsPerMachine = subJob.getCPUsPerMachine();
+        if (CPUsPerMachine == 0)
+            CPUsPerMachine = cluster.getCPUsPerMachine();
         sd.addAttribute("count", machineCount * CPUsPerMachine);
         sd.addAttribute("hostCount", machineCount);
         sd.addAttribute("java.home", new URI(cluster.getJavaHome()));
@@ -166,7 +166,7 @@ public class SatinRunner implements MetricListener {
         environment.put("ibis.registry.pool", "test");
         environment.put("satin.closed", "true");
         environment.put("ibis.pool.total_hosts", ""
-                + (machineCount * CPUsPerMachine));
+                + job.getTotalCPUCount());
         sd.setEnvironment(environment);
 
         prefs.put("ResourceBroker.adaptor.name", cluster.getAccessType());
