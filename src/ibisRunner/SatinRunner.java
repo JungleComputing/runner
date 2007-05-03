@@ -159,11 +159,11 @@ public class SatinRunner implements MetricListener {
             classpath += ":lib/" + jars[i];
         }
         sd.addAttribute("java.classpath", classpath);
-        sd.addAttribute("java.flags", "-Xmx400M");
+        sd.addAttribute("java.flags", "-Xmx800M");
 
         HashMap<String, String> environment = new HashMap<String, String>();
         environment.put("ibis.registry.serverAddress", "fs0.das3.cs.vu.nl");
-        environment.put("ibis.registry.pool", "test");
+        environment.put("ibis.registry.pool", "satinRunner.job." + job.getJobNr());
         environment.put("satin.closed", "true");
         environment.put("ibis.pool.total_hosts", ""
                 + job.getTotalCPUCount());
