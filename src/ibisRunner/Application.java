@@ -8,14 +8,17 @@ import java.util.ArrayList;
 public class Application {
     private String executable;
 
+    private String jarFile;
+    
     private String[] arguments;
 
     private String friendlyName;
 
-    public Application(String command, String[] parameters, String name) {
+    public Application(String command, String[] parameters, String name, String jarFile) {
         this.executable = command;
         this.arguments = parameters;
         friendlyName = name;
+        this.jarFile = jarFile;
     }
 
     public String getExecutable() {
@@ -49,6 +52,9 @@ public class Application {
         String name = in.readString();
         in.readln();
 
+        String jarFile = in.readString();
+        in.readln();
+
         String command = in.readString();
         in.readln();
 
@@ -65,7 +71,7 @@ public class Application {
         }
         
         System.err.println(" DONE");
-        return new Application(command, parameters, name);
+        return new Application(command, parameters, name, jarFile);
         
     }
     
@@ -79,5 +85,19 @@ public class Application {
         }
         
         return res;
+    }
+
+    /**
+     * @return the jarFile
+     */
+    public String getJarFile() {
+        return jarFile;
+    }
+
+    /**
+     * @param jarFile the jarFile to set
+     */
+    public void setJarFile(String jarFile) {
+        this.jarFile = jarFile;
     }
 }
