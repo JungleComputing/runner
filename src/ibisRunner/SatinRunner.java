@@ -161,7 +161,7 @@ public class SatinRunner implements MetricListener {
         sd.addAttribute("java.flags", "-Xmx800M -Xms100M");
 
         HashMap<String, String> environment = new HashMap<String, String>();
-        environment.put("ibis.server.address", "fs0.das3.cs.vu.nl");
+        environment.put("ibis.server.address", "fs0.das2.cs.vu.nl");
         environment.put("ibis.pool.name", "satinRunner.job." + job.getJobNr());
         environment.put("ibis.pool.size", "" + job.getTotalCPUCount());
         environment.put("ibis.location", subJob.getClusterName());
