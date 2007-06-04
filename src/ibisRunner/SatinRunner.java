@@ -166,7 +166,7 @@ public class SatinRunner implements MetricListener {
         environment.put("ibis.pool.size", "" + job.getTotalCPUCount());
         environment.put("ibis.location", subJob.getClusterName());
         environment.put("satin.closed", "true");
-        environment.put("satin.closeConnections", "false");
+//        environment.put("satin.closeConnections", "false");
         
         sd.setEnvironment(environment);
 
