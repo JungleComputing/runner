@@ -78,6 +78,7 @@ public class Application {
     public String toString() {
         String res = "Application " + friendlyName + "\n";
         res += "   executable: " + executable + "\n";
+        res += "   jarFile: " + jarFile + "\n";
         res += "   parameters:";
         
         for(int i=0; i<arguments.length; i++) {
