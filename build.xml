@@ -4,7 +4,7 @@
     </description>
 
 	<property environment="env"/>
-    <property name="engine_path" location="${env.GAT_LOCATION}/engine/lib" />
+        <property name="gat" location="${env.GAT_LOCATION}/lib/GAT-API.jar" />
 
 	<!-- Global properties for ibisRunner -->
 	<property name="src" location="src" />
@@ -15,9 +15,7 @@
 	<property name="java.debug.value" value="true" />
 
 	<path id="external_jars">
-		<fileset dir="${engine_path}">
-			<include name="*.jar" />
-		</fileset>
+		<fileset file="${gat}" />
 	</path>
 
 	<target name="init">
