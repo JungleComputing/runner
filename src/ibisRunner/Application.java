@@ -8,17 +8,17 @@ import java.util.ArrayList;
 public class Application {
     private String executable;
 
-    private String jarFile;
+    private String realAppName;
     
     private String[] arguments;
 
     private String friendlyName;
 
-    public Application(String command, String[] parameters, String name, String jarFile) {
+    public Application(String command, String[] parameters, String name, String realAppName) {
         this.executable = command;
         this.arguments = parameters;
         friendlyName = name;
-        this.jarFile = jarFile;
+        this.realAppName = realAppName;
     }
 
     public String getExecutable() {
@@ -78,7 +78,7 @@ public class Application {
     public String toString() {
         String res = "Application " + friendlyName + "\n";
         res += "   executable: " + executable + "\n";
-        res += "   jarFile: " + jarFile + "\n";
+        res += "   realAppName: " + realAppName + "\n";
         res += "   parameters:";
         
         for(int i=0; i<arguments.length; i++) {
@@ -89,16 +89,16 @@ public class Application {
     }
 
     /**
-     * @return the jarFile
+     * @return the real name
      */
-    public String getJarFile() {
-        return jarFile;
+    public String getRealAppName() {
+        return realAppName;
     }
 
     /**
-     * @param jarFile the jarFile to set
+     * @param realAppName the jarFile to set
      */
-    public void setJarFile(String jarFile) {
-        this.jarFile = jarFile;
+    public void setRealAppName(String realAppName) {
+        this.realAppName = realAppName;
     }
 }

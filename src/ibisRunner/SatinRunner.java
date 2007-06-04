@@ -131,7 +131,7 @@ public class SatinRunner implements MetricListener {
 
         File applicationJar =
                 GAT.createFile(context, prefs, new URI(ibisAppsHome + "/satin/"
-                        + app.getJarFile()));
+                        + app.getRealAppName() + "/" + app.getRealAppName() + ".jar"));
 
         SoftwareDescription sd = new SoftwareDescription();
         sd.setLocation(new URI(app.getExecutable()));
@@ -151,7 +151,7 @@ public class SatinRunner implements MetricListener {
         sd.addAttribute("hostCount", machineCount);
         sd.addAttribute("java.home", new URI(cluster.getJavaHome()));
 
-        String classpath = app.getFriendlyName() + ".jar:.";
+        String classpath = app.getRealAppName() + ".jar:.";
         java.io.File tmp = new java.io.File(ibisHome + "/lib");
         String[] jars = tmp.list();
         for (int i = 0; i < jars.length; i++) {
