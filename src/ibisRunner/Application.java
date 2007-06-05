@@ -14,11 +14,14 @@ public class Application {
 
     private String friendlyName;
 
-    public Application(String command, String[] parameters, String name, String realAppName) {
+    private String[] preStaged;
+    
+    public Application(String command, String[] parameters, String name, String realAppName, String[] preStaged) {
         this.executable = command;
         this.arguments = parameters;
         friendlyName = name;
         this.realAppName = realAppName;
+        this.preStaged = preStaged;
     }
 
     public String getExecutable() {
@@ -64,14 +67,28 @@ public class Application {
             in.skipWhiteSpace();
             params.add(p);
         }
+        in.readln();
         
         String[] parameters = new String[params.size()];
         for(int i=0; i<parameters.length; i++) {
             parameters[i] = (String) params.get(i);
         }
         
+        ArrayList<String> pre = new ArrayList<String>();
+        while (!in.eoln()) {
+            String p = in.readWord();
+            in.skipWhiteSpace();
+            pre.add(p);
+        }
+        
+        String[] preStaged = new String[pre.size()];
+        for(int i=0; i<preStaged.length; i++) {
+            preStaged[i] = (String) pre.get(i);
+        }
+        in.readln();
+        
         System.err.println(" DONE");
-        return new Application(command, parameters, name, jarFile);
+        return new Application(command, parameters, name, jarFile, preStaged);
         
     }
     
@@ -100,5 +117,13 @@ public class Application {
      */
     public void setRealAppName(String realAppName) {
         this.realAppName = realAppName;
+    }
+
+    public String[] getPreStaged() {
+        return preStaged;
+    }
+
+    public void setPreStaged(String[] preStaged) {
+        this.preStaged = preStaged;
     }
 }

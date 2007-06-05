@@ -60,6 +60,7 @@ public class SatinRunner implements MetricListener {
         System.err.println(run);
 
         GATContext context = new GATContext();
+        context.addPreference("ignoreHiddenFiles", "true");
 
         ArrayList<Job> requested = run.getRequestedResources();
 
@@ -139,6 +140,12 @@ public class SatinRunner implements MetricListener {
         sd.setStderr(errFile);
         sd.addPreStagedFile(ibisLib);
         sd.addPreStagedFile(applicationJar);
+        for(int i=0; i<app.getPreStaged().length; i++) {
+            URI u = new URI(ibisAppsHome + "/satin/"
+            + app.getRealAppName() + "/" + app.getPreStaged()[i]);
+            File tmp = GAT.createFile(context, prefs, u);
+            sd.addPreStagedFile(tmp);
+        }
         sd.setArguments(app.getArguments());
 
         int machineCount = subJob.getMachineCount();
@@ -166,7 +173,7 @@ public class SatinRunner implements MetricListener {
         environment.put("ibis.pool.size", "" + job.getTotalCPUCount());
         environment.put("ibis.location", subJob.getClusterName());
         environment.put("satin.closed", "true");
-//        environment.put("satin.closeConnections", "false");
+        environment.put("satin.closeConnections", "false");
         
         sd.setEnvironment(environment);
 
@@ -180,7 +187,7 @@ public class SatinRunner implements MetricListener {
 
         JobDescription jd = new JobDescription(sd, rd);
 
-        //       System.err.println("constructed job description: " + jd);
+        System.err.println("constructed job description: " + jd);
 
         ResourceBroker broker = GAT.createResourceBroker(context, prefs);
 
