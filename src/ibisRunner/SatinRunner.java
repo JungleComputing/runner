@@ -61,6 +61,7 @@ public class SatinRunner implements MetricListener {
 
         GATContext context = new GATContext();
         context.addPreference("ignoreHiddenFiles", "true");
+        context.addPreference("ftp.connection.passive", "false");
 
         ArrayList<Job> requested = run.getRequestedResources();
 
