@@ -131,16 +131,11 @@ public class SatinRunner implements MetricListener {
         File ibisLib =
                 GAT.createFile(context, prefs, new URI(ibisHome + "/lib"));
 
-        File applicationJar =
-                GAT.createFile(context, prefs, new URI(ibisAppsHome + "/satin/"
-                        + app.getRealAppName() + "/" + app.getRealAppName() + ".jar"));
-
         SoftwareDescription sd = new SoftwareDescription();
         sd.setLocation(new URI(app.getExecutable()));
         sd.setStdout(outFile);
         sd.setStderr(errFile);
         sd.addPreStagedFile(ibisLib);
-        sd.addPreStagedFile(applicationJar);
         for(int i=0; i<app.getPreStaged().length; i++) {
             URI u = new URI(ibisAppsHome + "/satin/"
             + app.getRealAppName() + "/" + app.getPreStaged()[i]);
