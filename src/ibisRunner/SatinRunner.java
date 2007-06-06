@@ -139,11 +139,11 @@ public class SatinRunner implements MetricListener {
         sd.setStderr(errFile);
         sd.addPreStagedFile(ibisLib);
         for(int i=0; i<app.getPreStaged().length; i++) {
-            classpath += app.getPreStaged()[i] + ":";
             URI u = new URI(ibisAppsHome + "/satin/"
             + app.getRealAppName() + "/" + app.getPreStaged()[i]);
             File tmp = GAT.createFile(context, prefs, u);
             sd.addPreStagedFile(tmp);
+            classpath += tmp.getName() + ":";
         }
         sd.setArguments(app.getArguments());
 
