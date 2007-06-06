@@ -8,20 +8,19 @@ import java.util.ArrayList;
 public class Application {
     private String executable;
 
-    private String realAppName;
-    
     private String[] arguments;
 
     private String friendlyName;
 
     private String[] preStaged;
+    private String[] postStaged;
     
-    public Application(String command, String[] parameters, String name, String realAppName, String[] preStaged) {
+    public Application(String command, String[] parameters, String name, String[] preStaged, String[] postStaged) {
         this.executable = command;
         this.arguments = parameters;
         friendlyName = name;
-        this.realAppName = realAppName;
         this.preStaged = preStaged;
+        this.postStaged = postStaged;
     }
 
     public String getExecutable() {
@@ -55,9 +54,6 @@ public class Application {
         String name = in.readString();
         in.readln();
 
-        String jarFile = in.readString();
-        in.readln();
-
         String command = in.readString();
         in.readln();
 
@@ -79,23 +75,33 @@ public class Application {
             String p = in.readWord();
             in.skipWhiteSpace();
             pre.add(p);
-        }
-        
+        }        
         String[] preStaged = new String[pre.size()];
         for(int i=0; i<preStaged.length; i++) {
             preStaged[i] = (String) pre.get(i);
         }
         in.readln();
         
+        ArrayList<String> post = new ArrayList<String>();
+        while (!in.eoln()) {
+            String p = in.readWord();
+            in.skipWhiteSpace();
+            post.add(p);
+        }        
+        String[] postStaged = new String[post.size()];
+        for(int i=0; i<postStaged.length; i++) {
+            postStaged[i] = (String) post.get(i);
+        }
+        in.readln();
+        
         System.err.println(" DONE");
-        return new Application(command, parameters, name, jarFile, preStaged);
+        return new Application(command, parameters, name, preStaged, postStaged);
         
     }
     
     public String toString() {
         String res = "Application " + friendlyName + "\n";
         res += "   executable: " + executable + "\n";
-        res += "   realAppName: " + realAppName + "\n";
         res += "   parameters:";
         
         for(int i=0; i<arguments.length; i++) {
@@ -105,25 +111,19 @@ public class Application {
         return res;
     }
 
-    /**
-     * @return the real name
-     */
-    public String getRealAppName() {
-        return realAppName;
-    }
-
-    /**
-     * @param realAppName the jarFile to set
-     */
-    public void setRealAppName(String realAppName) {
-        this.realAppName = realAppName;
-    }
-
     public String[] getPreStaged() {
         return preStaged;
     }
 
     public void setPreStaged(String[] preStaged) {
         this.preStaged = preStaged;
+    }
+
+    public String[] getPostStaged() {
+        return postStaged;
+    }
+
+    public void setPostStaged(String[] postStaged) {
+        this.postStaged = postStaged;
     }
 }
