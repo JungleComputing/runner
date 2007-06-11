@@ -8,6 +8,8 @@ import java.util.ArrayList;
 public class Application {
     private String executable;
 
+    private String[] javaFlags;
+    
     private String[] arguments;
 
     private String friendlyName;
@@ -15,8 +17,9 @@ public class Application {
     private String[] preStaged;
     private String[] postStaged;
     
-    public Application(String command, String[] parameters, String name, String[] preStaged, String[] postStaged) {
+    public Application(String command, String[] javaFlags, String[] parameters, String name, String[] preStaged, String[] postStaged) {
         this.executable = command;
+        this.javaFlags = javaFlags;
         this.arguments = parameters;
         friendlyName = name;
         this.preStaged = preStaged;
@@ -47,6 +50,23 @@ public class Application {
         this.arguments = parameters;
     }
 
+    private static String[] readStringArray(Input in) {
+        ArrayList<String> res = new ArrayList<String>();
+        while (!in.eoln()) {
+            String p = in.readWord();
+            in.skipWhiteSpace();
+            res.add(p);
+        }
+        in.readln();
+        
+        String[] result = new String[res.size()];
+        for(int i=0; i<result.length; i++) {
+            result[i] = (String) res.get(i);
+        }
+
+        return result;
+    }
+    
     public static Application loadApplication(String filename) {
         System.err.print("loading application: " + filename);
         Input in = new Input(filename);
@@ -57,45 +77,13 @@ public class Application {
         String command = in.readString();
         in.readln();
 
-        ArrayList<String> params = new ArrayList<String>();
-        while (!in.eoln()) {
-            String p = in.readWord();
-            in.skipWhiteSpace();
-            params.add(p);
-        }
-        in.readln();
-        
-        String[] parameters = new String[params.size()];
-        for(int i=0; i<parameters.length; i++) {
-            parameters[i] = (String) params.get(i);
-        }
-        
-        ArrayList<String> pre = new ArrayList<String>();
-        while (!in.eoln()) {
-            String p = in.readWord();
-            in.skipWhiteSpace();
-            pre.add(p);
-        }        
-        String[] preStaged = new String[pre.size()];
-        for(int i=0; i<preStaged.length; i++) {
-            preStaged[i] = (String) pre.get(i);
-        }
-        in.readln();
-        
-        ArrayList<String> post = new ArrayList<String>();
-        while (!in.eoln()) {
-            String p = in.readWord();
-            in.skipWhiteSpace();
-            post.add(p);
-        }        
-        String[] postStaged = new String[post.size()];
-        for(int i=0; i<postStaged.length; i++) {
-            postStaged[i] = (String) post.get(i);
-        }
-        in.readln();
+        String[] javaFlags = readStringArray(in); 
+        String[] parameters = readStringArray(in); 
+        String[] preStaged = readStringArray(in);
+        String[] postStaged = readStringArray(in);
         
         System.err.println(" DONE");
-        return new Application(command, parameters, name, preStaged, postStaged);
+        return new Application(command, javaFlags, parameters, name, preStaged, postStaged);
         
     }
     
@@ -125,5 +113,13 @@ public class Application {
 
     public void setPostStaged(String[] postStaged) {
         this.postStaged = postStaged;
+    }
+
+    public String[] getJavaFlags() {
+        return javaFlags;
+    }
+
+    public void setJavaFlags(String[] javaFlags) {
+        this.javaFlags = javaFlags;
     }
 }
