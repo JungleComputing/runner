@@ -119,6 +119,17 @@ public class Application {
         return javaFlags;
     }
 
+    public String getJavaFlagsAsString() {
+        String res = "";
+        for(int i=0; i<javaFlags.length; i++) {
+            res += javaFlags[i];
+            if(i != javaFlags.length-1) {
+                res += " ";
+            }
+        }
+        return res;
+    }
+
     public void setJavaFlags(String[] javaFlags) {
         this.javaFlags = javaFlags;
     }
