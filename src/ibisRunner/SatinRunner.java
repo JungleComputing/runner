@@ -170,7 +170,7 @@ public class SatinRunner implements MetricListener {
             classpath += ":lib/" + jars[i];
         }
         sd.addAttribute("java.classpath", classpath);
-        sd.addAttribute("java.flags", app.getJavaFlags());
+        sd.addAttribute("java.flags", app.getJavaFlagsAsString());
 
         HashMap<String, String> environment = new HashMap<String, String>();
         environment.put("ibis.server.address", "fs0.das2.cs.vu.nl");
