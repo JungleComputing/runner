@@ -91,10 +91,28 @@ public class Application {
         String res = "Application " + friendlyName + "\n";
         res += "   executable: " + executable + "\n";
         res += "   parameters:";
-        
         for(int i=0; i<arguments.length; i++) {
             res += " " + arguments[i];
         }
+        res += "\n";
+        
+        res += "   java flags:";
+        for(int i=0; i<javaFlags.length; i++) {
+            res += " " + javaFlags[i];
+        }
+        res += "\n";
+        
+        res += "   pre staged:";
+        for(int i=0; i<preStaged.length; i++) {
+            res += " " + preStaged[i];
+        }
+        res += "\n";
+        
+        res += "   post staged:";
+        for(int i=0; i<postStaged.length; i++) {
+            res += " " + postStaged[i];
+        }
+        res += "\n";
         
         return res;
     }
