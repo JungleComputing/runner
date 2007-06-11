@@ -120,12 +120,14 @@ public class SatinRunner implements MetricListener {
                         + app.getFriendlyName() + "." + subJob.getClusterName()
                         + "." + job.getJobNr()
                         + "." + subJob.getSubJobNr()
+                        + "." + job.getTotalCPUCount()
                         + ".stdout"));
         File errFile =
                 GAT.createFile(context, prefs, new URI("any:///"
                         + app.getFriendlyName() + "." + subJob.getClusterName()
                         + "." + job.getJobNr()
                         + "." + subJob.getSubJobNr()
+                        + "." + job.getTotalCPUCount()
                         + ".stderr"));
 
         File ibisLib =
