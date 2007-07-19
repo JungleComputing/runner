@@ -128,6 +128,7 @@ public class SatinRunner implements MetricListener {
                         + app.getFriendlyName() + "." + subJob.getClusterName()
                         + "." + job.getJobNr()
                         + "." + subJob.getSubJobNr()
+                        + "." + job.getTotalMachineCount()
                         + "." + job.getTotalCPUCount()
                         + ".stderr"));
 
