@@ -12,7 +12,7 @@ public class Application {
     
     private String[] arguments;
 
-    private String friendlyName;
+    private String directoryName;
 
     private String[] preStaged;
     private String[] postStaged;
@@ -21,7 +21,7 @@ public class Application {
         this.executable = command;
         this.javaFlags = javaFlags;
         this.arguments = parameters;
-        friendlyName = name;
+        directoryName = name;
         this.preStaged = preStaged;
         this.postStaged = postStaged;
     }
@@ -30,24 +30,12 @@ public class Application {
         return executable;
     }
 
-    public void setExecutable(String exe) {
-        this.executable = exe;
-    }
-
-    public String getFriendlyName() {
-        return friendlyName;
-    }
-
-    public void setFriendlyName(String friendlyName) {
-        this.friendlyName = friendlyName;
+    public String getDirectoryName() {
+        return directoryName;
     }
 
     public String[] getArguments() {
         return (String[]) arguments.clone();
-    }
-
-    public void setArguments(String[] parameters) {
-        this.arguments = parameters;
     }
 
     private static String[] readStringArray(Input in) {
@@ -88,7 +76,7 @@ public class Application {
     }
     
     public String toString() {
-        String res = "Application " + friendlyName + "\n";
+        String res = "Application " + directoryName + "\n";
         res += "   executable: " + executable + "\n";
         res += "   parameters:";
         for(int i=0; i<arguments.length; i++) {
@@ -121,16 +109,8 @@ public class Application {
         return preStaged;
     }
 
-    public void setPreStaged(String[] preStaged) {
-        this.preStaged = preStaged;
-    }
-
     public String[] getPostStaged() {
         return postStaged;
-    }
-
-    public void setPostStaged(String[] postStaged) {
-        this.postStaged = postStaged;
     }
 
     public String[] getJavaFlags() {
@@ -146,9 +126,5 @@ public class Application {
             }
         }
         return res;
-    }
-
-    public void setJavaFlags(String[] javaFlags) {
-        this.javaFlags = javaFlags;
     }
 }

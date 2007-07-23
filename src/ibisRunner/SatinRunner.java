@@ -117,7 +117,7 @@ public class SatinRunner implements MetricListener {
         Preferences prefs = new Preferences();
         File outFile =
                 GAT.createFile(context, prefs, new URI("any:///"
-                        + app.getFriendlyName() + "." + subJob.getClusterName()
+                        + run.getRunFileName() + "." + subJob.getClusterName()
                         + "." + job.getJobNr()
                         + "." + subJob.getSubJobNr()
                         + "." + job.getTotalMachineCount()
@@ -125,7 +125,7 @@ public class SatinRunner implements MetricListener {
                         + ".stdout"));
         File errFile =
                 GAT.createFile(context, prefs, new URI("any:///"
-                        + app.getFriendlyName() + "." + subJob.getClusterName()
+                        + run.getRunFileName() + "." + subJob.getClusterName()
                         + "." + job.getJobNr()
                         + "." + subJob.getSubJobNr()
                         + "." + job.getTotalMachineCount()
@@ -144,7 +144,7 @@ public class SatinRunner implements MetricListener {
         sd.addPreStagedFile(ibisLib);
         for(int i=0; i<app.getPreStaged().length; i++) {
             URI u = new URI(ibisAppsHome + "/satin/"
-            + app.getFriendlyName() + "/" + app.getPreStaged()[i]);
+            + app.getDirectoryName() + "/" + app.getPreStaged()[i]);
             File tmp = GAT.createFile(context, prefs, u);
             sd.addPreStagedFile(tmp);
             classpath += tmp.getName() + ":";

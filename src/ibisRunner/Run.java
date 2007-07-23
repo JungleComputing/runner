@@ -1,5 +1,6 @@
 package ibisRunner;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class Run {
@@ -10,11 +11,16 @@ public class Run {
     private ArrayList<Job> job =
             new ArrayList<Job>();
 
+    private String runFileName;
+    
     public static Run loadRun(String filename) {
         System.err.print("loading run: " + filename);
-        Input in = new Input(filename);
-
         Run run = new Run();
+
+        File f = new File(filename);
+        run.runFileName = f.getName();
+                
+        Input in = new Input(filename);
 
         String gridFile = in.readWord();
         in.readln();
@@ -93,5 +99,9 @@ public class Run {
         }
 
         return res;
+    }
+
+    public String getRunFileName() {
+        return runFileName;
     }
 }
