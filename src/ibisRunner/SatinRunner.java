@@ -135,7 +135,7 @@ public class SatinRunner implements MetricListener {
         File ibisLib =
                 GAT.createFile(context, prefs, new URI(ibisHome + "/lib"));
 
-        String classpath = "";
+        String classpath = "log4j.properties:";
 
         File log4jproperties = GAT.createFile(context, prefs, new URI("log4j.properties"));
         
