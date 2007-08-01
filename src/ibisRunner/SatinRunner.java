@@ -137,6 +137,8 @@ public class SatinRunner implements MetricListener {
 
         String classpath = "";
 
+        File log4jproperties = GAT.createFile(context, prefs, new URI("log4j.properties"));
+        
         SoftwareDescription sd = new SoftwareDescription();
         sd.setLocation(new URI(app.getExecutable()));
         sd.setStdout(outFile);
@@ -154,6 +156,7 @@ public class SatinRunner implements MetricListener {
             File tmp = GAT.createFile(context, prefs, u);
             sd.addPostStagedFile(tmp);
         }
+        sd.addPreStagedFile(log4jproperties);
         sd.setArguments(app.getArguments());
 
         int machineCount = subJob.getMachineCount();
