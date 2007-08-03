@@ -168,7 +168,7 @@ public class SatinRunner implements MetricListener {
         sd.addAttribute("count", machineCount * CPUsPerMachine);
         sd.addAttribute("hostCount", machineCount);
         sd.addAttribute("java.home", new URI(cluster.getJavaHome()));
-        sd.addAttribute("maxWallTime", "6000");
+        sd.addAttribute("maxWallTime", "600");
 
         java.io.File tmp = new java.io.File(ibisHome + "/lib");
         String[] jars = tmp.list();
