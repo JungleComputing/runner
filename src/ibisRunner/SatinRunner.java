@@ -70,7 +70,7 @@ public class SatinRunner implements MetricListener {
                 submitJob(run, context, requested.get(i));
             } catch (Exception e) {
                 System.err.println("Job submission to " + requested.get(i)
-                        + " failed: " + e);
+                    + " failed: " + e);
                 e.printStackTrace();
                 GAT.end();
                 System.exit(1);
@@ -79,21 +79,22 @@ public class SatinRunner implements MetricListener {
     }
 
     public void submitJob(Run run, GATContext context, Job job)
-            throws GATInvocationException, GATObjectCreationException,
-            URISyntaxException {
-        org.gridlab.gat.resources.Job[] jobs =
-                new org.gridlab.gat.resources.Job[job.numberOfSubJobs()];
+        throws GATInvocationException, GATObjectCreationException,
+        URISyntaxException {
+        org.gridlab.gat.resources.Job[] jobs = new org.gridlab.gat.resources.Job[job
+            .numberOfSubJobs()];
         for (int i = 0; i < job.numberOfSubJobs(); i++) {
             jobs[i] = submitSubJob(run, context, job, job.get(i));
         }
 
-        System.err.println("job " + job.getJobNr() + " submitted, waiting for subjobs");
+        System.err.println("job " + job.getJobNr()
+            + " submitted, waiting for subjobs");
 
         synchronized (this) {
             for (int i = 0; i < job.numberOfSubJobs(); i++) {
                 // wait until job is done
                 while ((jobs[i].getState() != org.gridlab.gat.resources.Job.STOPPED)
-                        && (jobs[i].getState() != org.gridlab.gat.resources.Job.SUBMISSION_ERROR)) {
+                    && (jobs[i].getState() != org.gridlab.gat.resources.Job.SUBMISSION_ERROR)) {
                     try {
                         wait();
                     } catch (Exception e) {
@@ -105,53 +106,50 @@ public class SatinRunner implements MetricListener {
     }
 
     public org.gridlab.gat.resources.Job submitSubJob(Run run,
-            GATContext context, Job job, SubJob subJob) throws GATInvocationException,
-            GATObjectCreationException, URISyntaxException {
+        GATContext context, Job job, SubJob subJob)
+        throws GATInvocationException, GATObjectCreationException,
+        URISyntaxException {
 
-        System.err.println("submit of job " + job.getJobNr() + " subJob " + subJob.getSubJobNr());
+        System.err.println("submit of job " + job.getJobNr() + " subJob "
+            + subJob.getSubJobNr());
 
         Application app = run.getApp();
         Grid grid = run.getGrid();
         Cluster cluster = grid.getCluster(subJob.getClusterName());
 
         Preferences prefs = new Preferences();
-        File outFile =
-                GAT.createFile(context, prefs, new URI("any:///"
-                        + run.getRunFileName() + "." + subJob.getClusterName()
-                        + "." + job.getJobNr()
-                        + "." + subJob.getSubJobNr()
-                        + "." + job.getTotalMachineCount()
-                        + "." + job.getTotalCPUCount()
-                        + ".stdout"));
-        File errFile =
-                GAT.createFile(context, prefs, new URI("any:///"
-                        + run.getRunFileName() + "." + subJob.getClusterName()
-                        + "." + job.getJobNr()
-                        + "." + subJob.getSubJobNr()
-                        + "." + job.getTotalMachineCount()
-                        + "." + job.getTotalCPUCount()
-                        + ".stderr"));
+        File outFile = GAT.createFile(context, prefs, new URI("any:///"
+            + run.getRunFileName() + "." + subJob.getClusterName() + "."
+            + job.getJobNr() + "." + subJob.getSubJobNr() + "."
+            + job.getTotalMachineCount() + "." + job.getTotalCPUCount()
+            + ".stdout"));
+        File errFile = GAT.createFile(context, prefs, new URI("any:///"
+            + run.getRunFileName() + "." + subJob.getClusterName() + "."
+            + job.getJobNr() + "." + subJob.getSubJobNr() + "."
+            + job.getTotalMachineCount() + "." + job.getTotalCPUCount()
+            + ".stderr"));
 
-        File ibisLib =
-                GAT.createFile(context, prefs, new URI(ibisHome + "/lib"));
+        File ibisLib = GAT.createFile(context, prefs,
+            new URI(ibisHome + "/lib"));
 
         String classpath = "log4j.properties:";
 
-        File log4jproperties = GAT.createFile(context, prefs, new URI("log4j.properties"));
-        
+        File log4jproperties = GAT.createFile(context, prefs, new URI(
+            "log4j.properties"));
+
         SoftwareDescription sd = new SoftwareDescription();
         sd.setLocation(new URI(app.getExecutable()));
         sd.setStdout(outFile);
         sd.setStderr(errFile);
         sd.addPreStagedFile(ibisLib);
-        for(int i=0; i<app.getPreStaged().length; i++) {
-            URI u = new URI(ibisAppsHome + "/satin/"
-            + app.getDirectoryName() + "/" + app.getPreStaged()[i]);
+        for (int i = 0; i < app.getPreStaged().length; i++) {
+            URI u = new URI(ibisAppsHome + "/satin/" + app.getDirectoryName()
+                + "/" + app.getPreStaged()[i]);
             File tmp = GAT.createFile(context, prefs, u);
             sd.addPreStagedFile(tmp);
             classpath += tmp.getName() + ":";
         }
-        for(int i=0; i<app.getPostStaged().length; i++) {
+        for (int i = 0; i < app.getPostStaged().length; i++) {
             URI u = new URI(app.getPostStaged()[i]);
             File tmp = GAT.createFile(context, prefs, u);
             sd.addPostStagedFile(tmp);
@@ -160,11 +158,9 @@ public class SatinRunner implements MetricListener {
         sd.setArguments(app.getArguments());
 
         int machineCount = subJob.getMachineCount();
-        if (machineCount == 0)
-            machineCount = cluster.getMachineCount();
+        if (machineCount == 0) machineCount = cluster.getMachineCount();
         int CPUsPerMachine = subJob.getCPUsPerMachine();
-        if (CPUsPerMachine == 0)
-            CPUsPerMachine = cluster.getCPUsPerMachine();
+        if (CPUsPerMachine == 0) CPUsPerMachine = cluster.getCPUsPerMachine();
         sd.addAttribute("count", machineCount * CPUsPerMachine);
         sd.addAttribute("hostCount", machineCount);
         sd.addAttribute("java.home", new URI(cluster.getJavaHome()));
@@ -180,23 +176,24 @@ public class SatinRunner implements MetricListener {
 
         HashMap<String, String> environment = new HashMap<String, String>();
         environment.put("ibis.server.address", "fs0.das2.cs.vu.nl");
-        environment.put("ibis.pool.name", "satinRunner.job." + job.getJobNr());
+        environment.put("ibis.pool.name", "satinRunner.job." + job.getJobNr()
+            + "." + Math.random());
+
         environment.put("ibis.pool.size", "" + job.getTotalCPUCount());
         environment.put("ibis.location.postfix", subJob.getClusterName());
         environment.put("ibis.location.automatic", "true");
 
         environment.put("satin.closed", "true");
         environment.put("satin.closeConnections", "false");
-        
+
         sd.setEnvironment(environment);
 
         prefs.put("ResourceBroker.adaptor.name", cluster.getAccessType());
-        Hashtable<String, String> hardwareAttributes =
-                new Hashtable<String, String>();
+        Hashtable<String, String> hardwareAttributes = new Hashtable<String, String>();
         hardwareAttributes.put("machine.node", cluster.getHostname());
 
-        ResourceDescription rd =
-                new HardwareResourceDescription(hardwareAttributes);
+        ResourceDescription rd = new HardwareResourceDescription(
+            hardwareAttributes);
 
         JobDescription jd = new JobDescription(sd, rd);
 
