@@ -133,10 +133,13 @@ public class SatinRunner implements MetricListener {
         File ibisLib = GAT.createFile(context, prefs,
             new URI(ibisHome + "/lib"));
 
-        String classpath = "log4j.properties:";
+        String classpath = "log4j.properties:smartsockets.properties:";
 
         File log4jproperties = GAT.createFile(context, prefs, new URI(
             "log4j.properties"));
+
+        File smartsocketsproperties = GAT.createFile(context, prefs, new URI(
+        "smartsockets.properties"));
 
         SoftwareDescription sd = new SoftwareDescription();
         sd.setLocation(new URI(app.getExecutable()));
@@ -156,6 +159,7 @@ public class SatinRunner implements MetricListener {
             sd.addPostStagedFile(tmp);
         }
         sd.addPreStagedFile(log4jproperties);
+        sd.addPreStagedFile(smartsocketsproperties);
         sd.setArguments(app.getArguments());
 
         int machineCount = subJob.getMachineCount();
