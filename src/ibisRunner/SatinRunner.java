@@ -189,7 +189,7 @@ public class SatinRunner implements MetricListener {
         environment.put("ibis.location.automatic", "true");
 
         environment.put("satin.closed", "true");
-        environment.put("satin.closeConnections", "false");
+//        environment.put("satin.closeConnections", "false");
 
         sd.setEnvironment(environment);
 
