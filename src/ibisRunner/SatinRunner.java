@@ -83,8 +83,9 @@ public class SatinRunner implements MetricListener {
         URISyntaxException {
         org.gridlab.gat.resources.Job[] jobs = new org.gridlab.gat.resources.Job[job
             .numberOfSubJobs()];
+        String poolID = "" + Math.random();
         for (int i = 0; i < job.numberOfSubJobs(); i++) {
-            jobs[i] = submitSubJob(run, context, job, job.get(i));
+            jobs[i] = submitSubJob(run, context, job, job.get(i), poolID);
         }
 
         System.err.println("job " + job.getJobNr()
@@ -106,7 +107,7 @@ public class SatinRunner implements MetricListener {
     }
 
     public org.gridlab.gat.resources.Job submitSubJob(Run run,
-        GATContext context, Job job, SubJob subJob)
+        GATContext context, Job job, SubJob subJob, String poolID)
         throws GATInvocationException, GATObjectCreationException,
         URISyntaxException {
 
@@ -177,7 +178,7 @@ public class SatinRunner implements MetricListener {
         HashMap<String, String> environment = new HashMap<String, String>();
         environment.put("ibis.server.address", "fs0.das2.cs.vu.nl");
         environment.put("ibis.pool.name", "satinRunner.job." + job.getJobNr()
-            + "." + Math.random());
+            + "." + poolID);
 
         environment.put("ibis.pool.size", "" + job.getTotalCPUCount());
         environment.put("ibis.location.postfix", subJob.getClusterName());
