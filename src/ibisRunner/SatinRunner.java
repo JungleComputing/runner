@@ -76,6 +76,9 @@ public class SatinRunner implements MetricListener {
                 System.exit(1);
             }
         }
+
+        GAT.end();
+        System.exit(1);
     }
 
     public void submitJob(Run run, GATContext context, Job job)
