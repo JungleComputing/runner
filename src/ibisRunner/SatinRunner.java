@@ -184,6 +184,8 @@ public class SatinRunner implements MetricListener {
 
         HashMap<String, String> environment = new HashMap<String, String>();
         environment.put("ibis.server.address", "fs0.das2.cs.vu.nl");
+        environment.put("ibis.registry.central.ping.interval", "6000");
+        
         environment.put("ibis.pool.name", "satinRunner.job." + job.getJobNr()
             + "." + poolID);
 
