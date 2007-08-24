@@ -5,22 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 
-import org.gridlab.gat.GAT;
-import org.gridlab.gat.GATContext;
-import org.gridlab.gat.GATInvocationException;
-import org.gridlab.gat.GATObjectCreationException;
-import org.gridlab.gat.Preferences;
-import org.gridlab.gat.URI;
-import org.gridlab.gat.io.File;
-import org.gridlab.gat.monitoring.Metric;
-import org.gridlab.gat.monitoring.MetricDefinition;
-import org.gridlab.gat.monitoring.MetricListener;
-import org.gridlab.gat.monitoring.MetricValue;
-import org.gridlab.gat.resources.HardwareResourceDescription;
-import org.gridlab.gat.resources.JobDescription;
-import org.gridlab.gat.resources.ResourceBroker;
-import org.gridlab.gat.resources.ResourceDescription;
-import org.gridlab.gat.resources.SoftwareDescription;
+import org.gridlab.gat.*;
+import org.gridlab.gat.io.*;
+import org.gridlab.gat.monitoring.*;
+import org.gridlab.gat.resources.*;
 
 public class SatinRunner implements MetricListener {
     String gatLocation;
@@ -30,10 +18,18 @@ public class SatinRunner implements MetricListener {
     String ibisAppsHome;
 
     public static void main(String[] args) {
-        new SatinRunner().start(args[0]);
+        if(args.length < 1 || args.length > 2 ) {
+            System.err.println("usage: satinRunner <runFile> [runTime in seconds]");
+        }
+        
+        int time = -1;
+        if(args.length == 2) {
+            time = Integer.parseInt(args[1]);
+        }
+        new SatinRunner().start(args[0], time);
     }
 
-    public void start(String runFile) {
+    public void start(String runFile, int runTime) {
         gatLocation = System.getenv("GAT_LOCATION");
         if (gatLocation == null) {
             System.err.println("please set your GAT_LOCATION");
@@ -67,7 +63,7 @@ public class SatinRunner implements MetricListener {
 
         for (int i = 0; i < requested.size(); i++) {
             try {
-                submitJob(run, context, requested.get(i));
+                submitJob(run, context, requested.get(i), runTime);
             } catch (Exception e) {
                 System.err.println("Job submission to " + requested.get(i)
                     + " failed: " + e);
@@ -81,14 +77,14 @@ public class SatinRunner implements MetricListener {
         System.exit(1);
     }
 
-    public void submitJob(Run run, GATContext context, Job job)
+    public void submitJob(Run run, GATContext context, Job job, int runTime)
         throws GATInvocationException, GATObjectCreationException,
         URISyntaxException {
         org.gridlab.gat.resources.Job[] jobs = new org.gridlab.gat.resources.Job[job
             .numberOfSubJobs()];
         String poolID = "" + Math.random();
         for (int i = 0; i < job.numberOfSubJobs(); i++) {
-            jobs[i] = submitSubJob(run, context, job, job.get(i), poolID);
+            jobs[i] = submitSubJob(run, context, job, job.get(i), poolID, runTime);
         }
 
         System.err.println("job " + job.getJobNr()
@@ -110,7 +106,7 @@ public class SatinRunner implements MetricListener {
     }
 
     public org.gridlab.gat.resources.Job submitSubJob(Run run,
-        GATContext context, Job job, SubJob subJob, String poolID)
+        GATContext context, Job job, SubJob subJob, String poolID, int runTime)
         throws GATInvocationException, GATObjectCreationException,
         URISyntaxException {
 
@@ -172,7 +168,12 @@ public class SatinRunner implements MetricListener {
         sd.addAttribute("count", machineCount * CPUsPerMachine);
         sd.addAttribute("hostCount", machineCount);
         sd.addAttribute("java.home", new URI(cluster.getJavaHome()));
-        sd.addAttribute("maxWallTime", "600");
+        
+        if(runTime < 0) {
+            sd.addAttribute("maxWallTime", "600");
+        } else {
+            sd.addAttribute("maxWallTime", "" + runTime);
+        }
 
         java.io.File tmp = new java.io.File(ibisHome + "/lib");
         String[] jars = tmp.list();
