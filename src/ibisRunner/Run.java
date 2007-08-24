@@ -22,9 +22,11 @@ public class Run {
                 
         Input in = new Input(filename);
 
+        in.skipComments();
         String gridFile = in.readWord();
         in.readln();
 
+        in.skipComments();
         String appFile = in.readWord();
         in.readln();
 
@@ -34,6 +36,7 @@ public class Run {
             jobno++;
             int subJobNo = 0;
             while (true) {
+                in.skipComments();
                 int machineCount = 0;
                 int CPUsPerMachine = 0;
                 String cluster = in.readWord();

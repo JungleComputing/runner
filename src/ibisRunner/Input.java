@@ -507,4 +507,10 @@ public class Input {
         }
         return res;
     }
+    
+    public void skipComments() {
+        while (nextChar() == '#') {
+            readln();
+        }
+    }
 }
