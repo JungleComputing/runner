@@ -51,10 +51,12 @@ public class Run {
                     CPUsPerMachine = in.readInt();
                 }
 
-                SubJob j = new SubJob(cluster, machineCount, CPUsPerMachine, subJobNo);
-                subJobNo++;
-                res.addSubJob(j);
-
+                if(machineCount > 0) {
+                    SubJob j = new SubJob(cluster, machineCount, CPUsPerMachine, subJobNo);
+                    subJobNo++;
+                    res.addSubJob(j);
+                }
+                
                 in.skipWhiteSpace();
                 if (in.eoln())
                     break;
