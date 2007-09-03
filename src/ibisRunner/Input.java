@@ -328,7 +328,7 @@ public class Input {
 
     protected String cardinal() {
         if (!Character.isDigit(nextChar())) {
-            System.err.println("Cannot read digits.");
+            System.err.println("Cannot read digits. char = " + nextChar());
             System.exit(1);
         }
         return optionalCardinal();
