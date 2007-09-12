@@ -11,227 +11,249 @@ import org.gridlab.gat.monitoring.*;
 import org.gridlab.gat.resources.*;
 
 public class SatinRunner implements MetricListener {
-    String gatLocation;
+	String gatLocation;
 
-    String ibisHome;
+	String ibisHome;
 
-    String ibisAppsHome;
+	String ibisAppsHome;
 
-    public static void main(String[] args) {
-        if(args.length < 1 || args.length > 2 ) {
-            System.err.println("usage: satinRunner <runFile> [runTime in seconds]");
-        }
-        
-        int time = -1;
-        if(args.length == 2) {
-            time = Integer.parseInt(args[1]);
-        }
-        new SatinRunner().start(args[0], time);
-    }
+	public static void main(String[] args) {
+		if (args.length < 1 || args.length > 2) {
+			System.err
+					.println("usage: satinRunner <runFile> [runTime in seconds]");
+		}
 
-    public void start(String runFile, int runTime) {
-        gatLocation = System.getenv("GAT_LOCATION");
-        if (gatLocation == null) {
-            System.err.println("please set your GAT_LOCATION");
-            System.exit(1);
-        }
-        System.err.println("using GAT at: " + gatLocation);
+		int time = -1;
+		if (args.length == 2) {
+			time = Integer.parseInt(args[1]);
+		}
+		new SatinRunner().start(args[0], time);
+	}
 
-        ibisHome = System.getenv("IBIS_HOME");
-        if (ibisHome == null) {
-            System.err.println("please set your IBIS_HOME");
-            System.exit(1);
-        }
-        System.err.println("using Ibis at: " + ibisHome);
+	public void start(String runFile, int runTime) {
+		gatLocation = System.getenv("GAT_LOCATION");
+		if (gatLocation == null) {
+			System.err.println("please set your GAT_LOCATION");
+			System.exit(1);
+		}
+		System.err.println("using GAT at: " + gatLocation);
 
-        ibisAppsHome = System.getenv("IBIS_APPS_HOME");
-        if (ibisAppsHome == null) {
-            System.err.println("please set your IBIS_APPS_HOME");
-            System.exit(1);
-        }
-        System.err.println("using Ibis applications at: " + ibisAppsHome);
+		ibisHome = System.getenv("IBIS_HOME");
+		if (ibisHome == null) {
+			System.err.println("please set your IBIS_HOME");
+			System.exit(1);
+		}
+		System.err.println("using Ibis at: " + ibisHome);
 
-        Run run = Run.loadRun(runFile);
+		ibisAppsHome = System.getenv("IBIS_APPS_HOME");
+		if (ibisAppsHome == null) {
+			System.err.println("please set your IBIS_APPS_HOME");
+			System.exit(1);
+		}
+		System.err.println("using Ibis applications at: " + ibisAppsHome);
 
-        System.err.println(run);
+		Run run = Run.loadRun(runFile);
 
-        GATContext context = new GATContext();
-        context.addPreference("ignoreHiddenFiles", "true");
-        context.addPreference("ftp.connection.passive", "false");
+		System.err.println(run);
 
-        ArrayList<Job> requested = run.getRequestedResources();
+		GATContext context = new GATContext();
+		context.addPreference("ignoreHiddenFiles", "true");
+		context.addPreference("ftp.connection.passive", "false");
 
-        for (int i = 0; i < requested.size(); i++) {
-            try {
-                submitJob(run, context, requested.get(i), runTime);
-            } catch (Exception e) {
-                System.err.println("Job submission to " + requested.get(i)
-                    + " failed: " + e);
-                e.printStackTrace();
-                GAT.end();
-                System.exit(1);
-            }
-        }
+		ArrayList<Job> requested = run.getRequestedResources();
 
-        GAT.end();
-        System.exit(1);
-    }
+		for (int i = 0; i < requested.size(); i++) {
+			try {
+				submitJob(run, context, requested.get(i), runTime);
+			} catch (Exception e) {
+				// error was already printed.
+				GAT.end();
+				System.exit(1);
+			}
+		}
 
-    public void submitJob(Run run, GATContext context, Job job, int runTime)
-        throws GATInvocationException, GATObjectCreationException,
-        URISyntaxException {
-        org.gridlab.gat.resources.Job[] jobs = new org.gridlab.gat.resources.Job[job
-            .numberOfSubJobs()];
-        String poolID = "" + Math.random();
-        for (int i = 0; i < job.numberOfSubJobs(); i++) {
-            jobs[i] = submitSubJob(run, context, job, job.get(i), poolID, runTime);
-        }
+		GAT.end();
+		System.exit(1);
+	}
 
-        System.err.println("job " + job.getJobNr()
-            + " submitted, waiting for subjobs");
+	public void submitJob(Run run, GATContext context, Job job, int runTime)
+			throws GATInvocationException, GATObjectCreationException,
+			URISyntaxException {
+		org.gridlab.gat.resources.Job[] jobs = new org.gridlab.gat.resources.Job[job
+				.numberOfSubJobs()];
+		String poolID = "" + Math.random();
+		for (int i = 0; i < job.numberOfSubJobs(); i++) {
+			try {
+				jobs[i] = submitSubJob(run, context, job, job.get(i), poolID,
+						runTime);
+			} catch (GATInvocationException e) {
+				System.err
+						.println("submission of job " + job + " failed: " + e);
+				e.printStackTrace();
+				throw e;
+			} catch (GATObjectCreationException e) {
+				System.err
+						.println("submission of job " + job + " failed: " + e);
+				e.printStackTrace();
+				throw e;
+			} catch (URISyntaxException e) {
+				System.err
+						.println("submission of job " + job + " failed: " + e);
+				e.printStackTrace();
+				throw e;
+			}
+		}
 
-        synchronized (this) {
-            for (int i = 0; i < job.numberOfSubJobs(); i++) {
-                // wait until job is done
-                while ((jobs[i].getState() != org.gridlab.gat.resources.Job.STOPPED)
-                    && (jobs[i].getState() != org.gridlab.gat.resources.Job.SUBMISSION_ERROR)) {
-                    try {
-                        wait();
-                    } catch (Exception e) {
-                        //ignore
-                    }
-                }
-            }
-        }
-    }
+		System.err.println("job " + job.getJobNr()
+				+ " submitted, waiting for subjobs");
 
-    public org.gridlab.gat.resources.Job submitSubJob(Run run,
-        GATContext context, Job job, SubJob subJob, String poolID, int runTime)
-        throws GATInvocationException, GATObjectCreationException,
-        URISyntaxException {
+		synchronized (this) {
+			for (int i = 0; i < job.numberOfSubJobs(); i++) {
+				// wait until job is done
+				while ((jobs[i].getState() != org.gridlab.gat.resources.Job.STOPPED)
+						&& (jobs[i].getState() != org.gridlab.gat.resources.Job.SUBMISSION_ERROR)) {
+					try {
+						wait();
+					} catch (Exception e) {
+						// ignore
+					}
+				}
+			}
+		}
+	}
 
-        System.err.println("submit of job " + job.getJobNr() + " subJob "
-            + subJob.getSubJobNr());
+	public org.gridlab.gat.resources.Job submitSubJob(Run run,
+			GATContext context, Job job, SubJob subJob, String poolID,
+			int runTime) throws GATInvocationException,
+			GATObjectCreationException, URISyntaxException {
 
-        Application app = run.getApp();
-        Grid grid = run.getGrid();
-        Cluster cluster = grid.getCluster(subJob.getClusterName());
+		System.err.println("submit of job " + job.getJobNr() + " subJob "
+				+ subJob.getSubJobNr());
 
-        Preferences prefs = new Preferences();
-        prefs.put("ResourceBroker.adaptor.name", cluster.getAccessType());
-        prefs.put("File.adaptor.name", cluster.getFileAccessType());
-        File outFile = GAT.createFile(context, prefs, new URI("any:///"
-            + run.getRunFileName() + "." + subJob.getClusterName() + "."
-            + job.getJobNr() + "." + subJob.getSubJobNr() + "."
-            + job.getTotalMachineCount() + "." + job.getTotalCPUCount()
-            + ".stdout"));
-        File errFile = GAT.createFile(context, prefs, new URI("any:///"
-            + run.getRunFileName() + "." + subJob.getClusterName() + "."
-            + job.getJobNr() + "." + subJob.getSubJobNr() + "."
-            + job.getTotalMachineCount() + "." + job.getTotalCPUCount()
-            + ".stderr"));
+		Application app = run.getApp();
+		Grid grid = run.getGrid();
+		Cluster cluster = grid.getCluster(subJob.getClusterName());
 
-        File ibisLib = GAT.createFile(context, prefs,
-            new URI(ibisHome + "/lib"));
+		Preferences prefs = new Preferences();
+		prefs.put("ResourceBroker.adaptor.name", cluster.getAccessType());
+		prefs.put("File.adaptor.name", cluster.getFileAccessType());
+		File outFile = GAT.createFile(context, prefs, new URI("any:///"
+				+ run.getRunFileName() + "." + subJob.getClusterName() + "."
+				+ job.getJobNr() + "." + subJob.getSubJobNr() + "."
+				+ job.getTotalMachineCount() + "." + job.getTotalCPUCount()
+				+ ".stdout"));
+		File errFile = GAT.createFile(context, prefs, new URI("any:///"
+				+ run.getRunFileName() + "." + subJob.getClusterName() + "."
+				+ job.getJobNr() + "." + subJob.getSubJobNr() + "."
+				+ job.getTotalMachineCount() + "." + job.getTotalCPUCount()
+				+ ".stderr"));
 
-        String classpath = "log4j.properties:smartsockets.properties:";
+		File ibisLib = GAT.createFile(context, prefs,
+				new URI(ibisHome + "/lib"));
 
-        String cwd = System.getProperty("user.dir");
-        
-        File log4jproperties = GAT.createFile(context, prefs, new URI(
-            cwd + "/" + "log4j.properties"));
+		String classpath = "log4j.properties:smartsockets.properties:";
 
-        File smartsocketsproperties = GAT.createFile(context, prefs, new URI(
-        		cwd + "/" + "smartsockets.properties"));
+		String cwd = System.getProperty("user.dir");
 
-        SoftwareDescription sd = new SoftwareDescription();
-        sd.setLocation(new URI(app.getExecutable()));
-        sd.setStdout(outFile);
-        sd.setStderr(errFile);
-        sd.addPreStagedFile(ibisLib);
-        for (int i = 0; i < app.getPreStaged().length; i++) {
-            URI u = new URI(ibisAppsHome + "/satin/" + app.getDirectoryName()
-                + "/" + app.getPreStaged()[i]);
-            File tmp = GAT.createFile(context, prefs, u);
-            sd.addPreStagedFile(tmp);
-            classpath += tmp.getName() + ":";
-        }
-        for (int i = 0; i < app.getPostStaged().length; i++) {
-            URI u = new URI(app.getPostStaged()[i]);
-            File tmp = GAT.createFile(context, prefs, u);
-            sd.addPostStagedFile(tmp);
-        }
-        sd.addPreStagedFile(log4jproperties);
-        sd.addPreStagedFile(smartsocketsproperties);
-        sd.setArguments(app.getArguments());
+		File log4jproperties = GAT.createFile(context, prefs, new URI(cwd + "/"
+				+ "log4j.properties"));
 
-        int machineCount = subJob.getMachineCount();
-        if (machineCount == 0) machineCount = cluster.getMachineCount();
-        int CPUsPerMachine = subJob.getCPUsPerMachine();
-        if (CPUsPerMachine == 0) CPUsPerMachine = cluster.getCPUsPerMachine();
-        sd.addAttribute("count", machineCount * CPUsPerMachine);
-        sd.addAttribute("hostCount", machineCount);
-        sd.addAttribute("java.home", new URI(cluster.getJavaHome()));
-        
-        if(runTime < 0) {
-            sd.addAttribute("maxWallTime", "600");
-        } else {
-            sd.addAttribute("maxWallTime", "" + runTime);
-        }
+		File smartsocketsproperties = GAT.createFile(context, prefs, new URI(
+				cwd + "/" + "smartsockets.properties"));
 
-        java.io.File tmp = new java.io.File(ibisHome + "/lib");
-        String[] jars = tmp.list();
-        for (int i = 0; i < jars.length; i++) {
-            classpath += ":lib/" + jars[i];
-        }
-        sd.addAttribute("java.classpath", classpath);
-        sd.addAttribute("java.flags", app.getJavaFlagsAsString());
+		SoftwareDescription sd = new SoftwareDescription();
+		sd.setLocation(new URI(app.getExecutable()));
+		sd.setStdout(outFile);
+		sd.setStderr(errFile);
+		sd.addPreStagedFile(ibisLib);
+		for (int i = 0; i < app.getPreStaged().length; i++) {
+			URI u = new URI(ibisAppsHome + "/satin/" + app.getDirectoryName()
+					+ "/" + app.getPreStaged()[i]);
+			File tmp = GAT.createFile(context, prefs, u);
+			sd.addPreStagedFile(tmp);
+			classpath += tmp.getName() + ":";
+		}
+		for (int i = 0; i < app.getPostStaged().length; i++) {
+			URI u = new URI(app.getPostStaged()[i]);
+			File tmp = GAT.createFile(context, prefs, u);
+			sd.addPostStagedFile(tmp);
+		}
+		sd.addPreStagedFile(log4jproperties);
+		sd.addPreStagedFile(smartsocketsproperties);
+		sd.setArguments(app.getArguments());
 
-        HashMap<String, String> environment = new HashMap<String, String>();
-        environment.put("ibis.server.address", "fs0.das2.cs.vu.nl");
-//        environment.put("ibis.registry.central.ping.interval", "6000");
-        
-        environment.put("ibis.pool.name", "satinRunner.job." + job.getJobNr()
-            + "." + poolID);
+		int machineCount = subJob.getMachineCount();
+		if (machineCount == 0)
+			machineCount = cluster.getMachineCount();
+		int CPUsPerMachine = subJob.getCPUsPerMachine();
+		if (CPUsPerMachine == 0)
+			CPUsPerMachine = cluster.getCPUsPerMachine();
+		sd.addAttribute("count", machineCount * CPUsPerMachine);
+		sd.addAttribute("hostCount", machineCount);
+		sd.addAttribute("java.home", new URI(cluster.getJavaHome()));
 
-        environment.put("ibis.pool.size", "" + job.getTotalCPUCount());
-        environment.put("ibis.location.postfix", subJob.getClusterName());
-        environment.put("ibis.location.automatic", "true");
+		if (runTime < 0) {
+			sd.addAttribute("maxWallTime", "600");
+		} else {
+			sd.addAttribute("maxWallTime", "" + runTime);
+		}
 
-        environment.put("satin.closed", "true");
-//        environment.put("satin.alg", "RS");
-        environment.put("satin.detailedStats", "true");
-//        environment.put("satin.closeConnections", "false");
+		java.io.File tmp = new java.io.File(ibisHome + "/lib");
+		String[] jars = tmp.list();
+		for (int i = 0; i < jars.length; i++) {
+			classpath += ":lib/" + jars[i];
+		}
+		sd.addAttribute("java.classpath", classpath);
+		sd.addAttribute("java.flags", app.getJavaFlagsAsString());
 
-        sd.setEnvironment(environment);
+		HashMap<String, String> environment = new HashMap<String, String>();
+		environment.put("ibis.server.address", "fs0.das2.cs.vu.nl");
+		// environment.put("ibis.registry.central.ping.interval", "6000");
 
-        Hashtable<String, String> hardwareAttributes = new Hashtable<String, String>();
-        hardwareAttributes.put("machine.node", cluster.getHostname());
+		environment.put("ibis.pool.name", "satinRunner.job." + job.getJobNr()
+				+ "." + poolID);
 
-        ResourceDescription rd = new HardwareResourceDescription(
-            hardwareAttributes);
+		environment.put("ibis.pool.size", "" + job.getTotalCPUCount());
+		environment.put("ibis.location.postfix", subJob.getClusterName());
+		environment.put("ibis.location.automatic", "true");
 
-        JobDescription jd = new JobDescription(sd, rd);
+		environment.put("satin.closed", "true");
+		// environment.put("satin.alg", "RS");
+		environment.put("satin.detailedStats", "true");
+		// environment.put("satin.closeConnections", "false");
 
-        System.err.println("constructed job description: " + jd);
+		sd.setEnvironment(environment);
 
-        ResourceBroker broker = GAT.createResourceBroker(context, prefs);
+		Hashtable<String, String> hardwareAttributes = new Hashtable<String, String>();
+		hardwareAttributes.put("machine.node", cluster.getHostname());
 
-        org.gridlab.gat.resources.Job j = broker.submitJob(jd);
-        MetricDefinition md = j.getMetricDefinitionByName("job.status");
-        Metric m = md.createMetric(null);
-        j.addMetricListener(this, m);
+		ResourceDescription rd = new HardwareResourceDescription(
+				hardwareAttributes);
 
-        return j;
-    }
+		JobDescription jd = new JobDescription(sd, rd);
 
-    public synchronized void processMetricEvent(MetricValue val) {
-        String state = (String) val.getValue();
-        org.gridlab.gat.resources.Job j = (org.gridlab.gat.resources.Job) val.getSource();
-        
-        String machine = (String) j.getJobDescription().getResourceDescription().getResourceAttribute("machine.node");
-        
-        System.err.println("Job status of " + machine + " changed to : " + state);
-        notifyAll();
-    }
+		System.err.println("constructed job description: " + jd);
+
+		ResourceBroker broker = GAT.createResourceBroker(context, prefs);
+
+		org.gridlab.gat.resources.Job j = broker.submitJob(jd);
+		MetricDefinition md = j.getMetricDefinitionByName("job.status");
+		Metric m = md.createMetric(null);
+		j.addMetricListener(this, m);
+
+		return j;
+	}
+
+	public synchronized void processMetricEvent(MetricValue val) {
+		String state = (String) val.getValue();
+		org.gridlab.gat.resources.Job j = (org.gridlab.gat.resources.Job) val
+				.getSource();
+
+		String machine = (String) j.getJobDescription()
+				.getResourceDescription().getResourceAttribute("machine.node");
+
+		System.err.println("Job status of " + machine + " changed to : "
+				+ state);
+		notifyAll();
+	}
 }
