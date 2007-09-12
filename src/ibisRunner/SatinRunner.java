@@ -88,17 +88,17 @@ public class SatinRunner implements MetricListener {
 						runTime);
 			} catch (GATInvocationException e) {
 				System.err
-						.println("submission of job " + job + " failed: " + e);
+						.println("submission of job " + job.get(i) + " failed: " + e);
 				e.printStackTrace();
 				throw e;
 			} catch (GATObjectCreationException e) {
 				System.err
-						.println("submission of job " + job + " failed: " + e);
+						.println("submission of job " + job.get(i) + " failed: " + e);
 				e.printStackTrace();
 				throw e;
 			} catch (URISyntaxException e) {
 				System.err
-						.println("submission of job " + job + " failed: " + e);
+						.println("submission of job " + job.get(i) + " failed: " + e);
 				e.printStackTrace();
 				throw e;
 			}
