@@ -224,8 +224,11 @@ public class SatinRunner implements MetricListener {
 
     public synchronized void processMetricEvent(MetricValue val) {
         String state = (String) val.getValue();
-
-        System.err.println("Job status changed to : " + state);
+        org.gridlab.gat.resources.Job j = (org.gridlab.gat.resources.Job) val.getSource();
+        
+        String machine = (String) j.getJobDescription().getResourceDescription().getResourceAttribute("machine.node");
+        
+        System.err.println("Job status of " + machine + " changed to : " + state);
         notifyAll();
     }
 }
