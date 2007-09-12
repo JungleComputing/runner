@@ -232,7 +232,7 @@ public class SatinRunner implements MetricListener {
 
 		JobDescription jd = new JobDescription(sd, rd);
 
-		System.err.println("constructed job description: " + jd);
+//		System.err.println("constructed job description: " + jd);
 
 		ResourceBroker broker = GAT.createResourceBroker(context, prefs);
 
