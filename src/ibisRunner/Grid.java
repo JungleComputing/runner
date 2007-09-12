@@ -60,14 +60,15 @@ public class Grid {
             // VU fs0.das2.cs.vu.nl ssh 64 2
             String friendly = in.readWord();
             String machine = in.readWord();
-            String access = in.readWord();
+            String broker = in.readWord();
+            String files = in.readWord();
             int machineCount = in.readInt();
             int CPUsPerMachine = in.readInt();
             String javaHome = in.readWord();
             in.readln();
 
             Cluster r =
-                    new Cluster(friendly, machine, access, machineCount,
+                    new Cluster(friendly, machine, broker, files, machineCount,
                             CPUsPerMachine, javaHome);
             g.addCluster(r);
         }

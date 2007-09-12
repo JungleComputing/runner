@@ -16,14 +16,17 @@ public class Cluster {
 
     private String javaHome;
 
+    private String fileAccessType;
+    
     /**
      * @param accessType the resource manager to use
      * @param hostname the hostname to contact
      */
-    public Cluster(String friendlyName, String hostname, String accessType,
+    public Cluster(String friendlyName, String hostname, String accessType, String fileAccessType,
             int machineCount, int CPUsPerMachine, String javaHome) {
         this.friendlyName = friendlyName;
         this.accessType = accessType;
+        this.fileAccessType = fileAccessType;
         this.hostname = hostname;
         this.machineCount = machineCount;
         this.CPUsPerMachine = CPUsPerMachine;
@@ -62,4 +65,8 @@ public class Cluster {
     public String getJavaHome() {
         return javaHome;
     }
+
+	public String getFileAccessType() {
+		return fileAccessType;
+	}
 }
