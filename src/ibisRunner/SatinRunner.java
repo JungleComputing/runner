@@ -118,6 +118,8 @@ public class SatinRunner implements MetricListener {
         Cluster cluster = grid.getCluster(subJob.getClusterName());
 
         Preferences prefs = new Preferences();
+        prefs.put("ResourceBroker.adaptor.name", cluster.getAccessType());
+        prefs.put("File.adaptor.name", cluster.getFileAccessType());
         File outFile = GAT.createFile(context, prefs, new URI("any:///"
             + run.getRunFileName() + "." + subJob.getClusterName() + "."
             + job.getJobNr() + "." + subJob.getSubJobNr() + "."
@@ -201,8 +203,6 @@ public class SatinRunner implements MetricListener {
 
         sd.setEnvironment(environment);
 
-        prefs.put("ResourceBroker.adaptor.name", cluster.getAccessType());
-        prefs.put("File.adaptor.name", cluster.getFileAccessType());
         Hashtable<String, String> hardwareAttributes = new Hashtable<String, String>();
         hardwareAttributes.put("machine.node", cluster.getHostname());
 
