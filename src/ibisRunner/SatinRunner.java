@@ -136,11 +136,13 @@ public class SatinRunner implements MetricListener {
 
         String classpath = "log4j.properties:smartsockets.properties:";
 
+        String cwd = System.getProperty("user.dir");
+        
         File log4jproperties = GAT.createFile(context, prefs, new URI(
-            "log4j.properties"));
+            cwd + "/" + "log4j.properties"));
 
         File smartsocketsproperties = GAT.createFile(context, prefs, new URI(
-        "smartsockets.properties"));
+        		cwd + "/" + "smartsockets.properties"));
 
         SoftwareDescription sd = new SoftwareDescription();
         sd.setLocation(new URI(app.getExecutable()));
