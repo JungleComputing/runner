@@ -17,6 +17,8 @@ public class SatinRunner implements MetricListener {
 
 	String ibisAppsHome;
 
+        String ibisServer = "fs0.das2.cs.vu.nl";
+
 	public static void main(String[] args) {
 		if (args.length < 1 || args.length > 2) {
 			System.err
@@ -51,6 +53,11 @@ public class SatinRunner implements MetricListener {
 			System.exit(1);
 		}
 		System.err.println("using Ibis applications at: " + ibisAppsHome);
+
+                String s = System.getenv("IBIS_SERVER");
+                if (s != null) {
+                    ibisServer = s;
+                }
 
 		Run run = Run.loadRun(runFile);
 
@@ -207,7 +214,7 @@ public class SatinRunner implements MetricListener {
 		sd.addAttribute("java.flags", app.getJavaFlagsAsString());
 
 		HashMap<String, String> environment = new HashMap<String, String>();
-		environment.put("ibis.server.address", "fs0.das2.cs.vu.nl");
+		environment.put("ibis.server.address", ibisServer);
 		// environment.put("ibis.registry.central.ping.interval", "6000");
 
 		environment.put("ibis.pool.name", "satinRunner.job." + job.getJobNr()
