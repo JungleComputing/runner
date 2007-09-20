@@ -17,6 +17,7 @@ public class SatinRunner implements MetricListener {
 
 	String ibisAppsHome;
 
+        String satinHome;
         String ibisServer = "fs0.das2.cs.vu.nl";
 
 	public static void main(String[] args) {
@@ -40,12 +41,19 @@ public class SatinRunner implements MetricListener {
 		}
 		System.err.println("using GAT at: " + gatLocation);
 
-		ibisHome = System.getenv("IBIS_HOME");
-		if (ibisHome == null) {
-			System.err.println("please set your IBIS_HOME");
-			System.exit(1);
-		}
-		System.err.println("using Ibis at: " + ibisHome);
+                ibisHome = System.getenv("IBIS_HOME");
+                if (ibisHome == null) {
+                        System.err.println("please set your IBIS_HOME");
+                        System.exit(1);
+                }
+                System.err.println("using Ibis at: " + ibisHome);
+
+                satinHome = System.getenv("SATIN_HOME");
+                if (satinHome == null) {
+                        System.err.println("please set your SATIN_HOME");
+                        System.exit(1);
+                }
+                System.err.println("using Satin at: " + satinHome);
 
 		ibisAppsHome = System.getenv("IBIS_APPS_HOME");
 		if (ibisAppsHome == null) {
@@ -156,7 +164,7 @@ public class SatinRunner implements MetricListener {
 				+ ".stderr"));
 
 		File ibisLib = GAT.createFile(context, prefs,
-				new URI(ibisHome + "/lib"));
+				new URI(satinHome + "/lib"));
 
 		String classpath = "log4j.properties:smartsockets.properties:";
 
@@ -205,7 +213,7 @@ public class SatinRunner implements MetricListener {
 			sd.addAttribute("maxWallTime", "" + runTime);
 		}
 
-		java.io.File tmp = new java.io.File(ibisHome + "/lib");
+		java.io.File tmp = new java.io.File(satinHome + "/lib");
 		String[] jars = tmp.list();
 		for (int i = 0; i < jars.length; i++) {
 			classpath += ":lib/" + jars[i];
