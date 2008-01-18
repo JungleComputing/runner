@@ -18,7 +18,7 @@ public class SatinRunner implements MetricListener {
 	String ibisAppsHome;
 
         String satinHome;
-        String ibisServer = "fs0.das2.cs.vu.nl";
+        String ibisServer = "fs0.das3.cs.vu.nl:5563";
 
 	public static void main(String[] args) {
 		if (args.length < 1 || args.length > 2) {
